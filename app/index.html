@@ -1,0 +1,183 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+       
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+    <script src="https://unpkg.com/buefy@0.6.5/lib/index.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/buefy/lib/buefy.min.css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        div {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <title>Web Project</title>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-3">
+                    <input type="text" v-model="status">
+                    <button class="" v-on:click="clearStatus">Clear Status</button>
+                </div>
+                <div class="column is-9">
+                    <h1>Deck of Life</h1>
+                    <div class="is-left">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column is-3">
+                    <h1>Locations</h1>
+                    <ul>
+                        <li v-for="(item, index) in playerLocations">{{ index }} - {{ item.name }} </li>
+                    </ul>
+                    <hr>
+                    <h1>Events</h1>
+                    <ul>
+                        <li v-for="(item, index) in playerEvents">{{ index }} - {{ item.name }} </li>
+                    </ul>
+                </div>
+                <div class="column is-3">
+                    <h1>Hand</h1>
+                    <div class="card" v-for="(item, card_index) in playerCards">
+                        <header class="card-header">
+                            <p class="card-header-title">{{ item.name }} - {{ item.location }}</p>
+                        </header>
+                        <div class="card-content">
+                            <div class="content">
+                                <p>{{ item.description }}</p>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <div @click="playCard(index)" class="card-footer-item">Play</div>
+                            <div @click="playCard(index)" class="card-footer-item">Discard</div>
+                        </footer>
+                    </div>
+                    <hr>
+                    <button class="button" @click="getCard()">Get Card</button>
+                </div>
+                <div class="column is-3">
+                    <h1>Deck</h1>
+                    <div class="card" v-for="(item, card_index) in deckCards">
+                        <header class="card-header">
+                            <p class="card-header-title">{{ item.name }} - {{ item.location }}</p>
+                        </header>
+                        <div class="card-content">
+                            <div class="content">
+                                <p>{{ item.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <h1>Friends</h1>
+                    <div v-for="(item, index) in playerFriends" class="media">
+                        <div class="media-left">
+                            <figure class="image is-64x64">
+                                <img src="https://bulma.io/images/placeholders/64x64.png" alt="Placeholder image">
+                            </figure>
+                        </div>
+                        <div class="media-content">
+                            <p class="title is-4">{{ item.name }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h1>Player List</h1>
+                    <div v-for="(item, index) in worldPlayers" class="card">
+                        <div>{{ index }} - {{ item.name }}</div>
+                        <div v-if="!isFriend(item._id)">
+                            <button @click="addFriend(item._id)">Add friend</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column is-9">
+                    {{ status }}
+                </div>
+                <div class="column is-3">
+                    <button v-on:click="clearStatus">Clear Status</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Vue.use(Buefy);
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                status: 'Idle',
+                player: {
+                    name: 'Raul',
+                    cards: [0, 0, 1, 2],
+                    deck: [0, 1, 2, 3, 4],
+                    locations: [0, 1, 2],
+                    friends:[0, 1]
+                },
+            },
+            methods: {
+                clearStatus : function () {
+                    this.status = '';
+                },
+                playCard: function(index) {
+                    this.player.cards.splice(index, 1);
+                },
+                getCard: function() {
+                    let index = getRandomInt(this.player.deck.length);
+                    this.player.cards.push(index);
+                },
+                addFriend: function(id) {
+                    this.player.friends.push(id);
+                },
+                isFriend: function(id) {
+                    return this.player.friends.indexOf(id) != -1;
+                }
+            },
+            computed: {
+                deckCards: function () {
+                    return this.player.deck.map((cardId, index) => card_collection.find(c => c._id == cardId));
+                },
+                playerCards: function () {
+                    return this.player.cards.map((cardId, index) => card_collection.find(c => c._id == cardId));
+                },
+                playerLocations: function () {
+                    return this.player.locations.map((locationId, index) => location_collection.find(l => l._id == locationId));
+                },
+                playerFriends: function () {
+                    return this.player.friends.map((playerId, index) => player_collection.find(p => p._id == playerId));
+                },
+                playerEvents: function () {
+                    return event_collection;
+                },
+                worldPlayers: function () {
+                    return player_collection;
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
+
