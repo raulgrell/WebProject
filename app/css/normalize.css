@@ -63,12 +63,9 @@ main { /* 1 */
   display: block;
 }
 
-/**
- * Add the correct margin in IE 8.
- */
 
 figure {
-  margin: 1em 40px;
+  margin: 0;
 }
 
 /**
