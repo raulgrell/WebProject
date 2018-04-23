@@ -32,9 +32,6 @@ ul {
     
 }
 
-
-
-
 /*! HTML5 Boilerplate v6.0.1 | MIT License | https://html5boilerplate.com/ */
 
 /*
@@ -43,8 +40,6 @@ ul {
  *
  * Vendor-prefixed and regular ::selection selectors cannot be combined:
  * https://stackoverflow.com/a/16982510/7133471
- *
- * Customize the background color to match your design.
  */
 
 ::-moz-selection {

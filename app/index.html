@@ -10,6 +10,7 @@
     <link rel="manifest" href="site.webmanifest">
     <link rel="apple-touch-icon" href="icon.png">
 
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js"
         integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
         crossorigin="anonymous"></script>
@@ -193,7 +194,7 @@
                 <div class="column is-9">
                     <h2 class="subtitle">Played</h2>
                     <div class="columns is-multiline">
-                        <div class="column is-3" v-for="(item, card_index) in playerHistory">
+                        <div class="column is-3" v-for="(item, card_index) in historyCards">
                             <div class="card">
                                 <header class="card-header">
                                     <p class="card-header-title">{{ item.name }} - {{ item.location }}</p>

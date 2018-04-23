@@ -11,13 +11,11 @@ const express = require('@feathersjs/express');
 const socketio = require('@feathersjs/socketio');
 const memory = require('feathers-memory');
 
-const knex = require('./knex');
+const knex = require('./db/knex');
 
 const authentication = require('./authentication');
 const services = require('./services');
-const middleware = require('./middleware');
 const channels = require('./channels');
-const appHooks = require('./app.hooks');
 
 const app = express(feathers());
 
@@ -39,21 +37,20 @@ app.configure(socketio());
 // Enable services
 app.configure(authentication);
 app.configure(knex);
-app.configure(middleware);
 app.configure(services);
 app.configure(channels);
-app.hooks(appHooks);
+
 
 // Dynamic Pages
 const indexRouter = require('./routes/index');
 app.use('/pages', indexRouter);
 
 // Live Reload
-var livereload = require('easy-livereload');
-app.use(livereload({
-  watchDirs: [ app.get('public') ],
-  port: process.env.LIVERELOAD_PORT || 35729
-}));
+// var livereload = require('easy-livereload');
+// app.use(livereload({
+//   watchDirs: [ app.get('public') ],
+//   port: process.env.LIVERELOAD_PORT || 35729
+// }));
 
 // Static pages
 app.use(express.static(app.get('public')));
@@ -61,5 +58,9 @@ app.use(express.errorHandler());
 
 var port = app.get('port');
 app.listen(port).on('listening', () => 
-  console.log('Server listening on localhost:' + port)
+  logger.info('Application started on http://%s:%d', app.get('host'), port)
+);
+
+process.on('unhandledRejection', (reason, p) =>
+  logger.error('Unhandled Rejection at: Promise ', p, reason)
 );

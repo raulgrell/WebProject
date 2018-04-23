@@ -30,6 +30,7 @@ router.put('/:id', function(req, res, next) {
 /* Delete a single card */
 router.delete('/:id', function(req, res, next) {
   const card_id = req.params.id;
+
   res.render('index', { title: 'Hello' });
 });
 
