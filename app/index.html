@@ -151,8 +151,18 @@
                         </div>
                         <div class="media-content">
                             <p>{{ item.name }}</p>
+                            <button @click="requestGroup(item)" class="is-pulled-right">Add To Group</button>
                         </div>
                     </div>
+                    <h1 class="title is-3">Group</h1>
+                    <!-- TODO: If no group show form or button -->
+                    <div>
+                         <ul v-if="playerAlreadyGrouped()">
+                             <li v-for="(item, index) in player.group.members">
+                                 {{ item.name }}
+                             </li>
+                         </ul>
+                    </div> 
                 </div>
             </div>
         </div>
@@ -405,6 +415,11 @@
                     locations: [0, 1],
                     favourites: [0],
                     friends: [1],
+                    group: {
+                        name: '',
+                        card_id: 0,
+                        members: []
+                    },
                     history: []
                 },
             },
@@ -426,7 +441,16 @@
                 },
                 isFriend: function (friend_id) {
                     return (this.player._id == friend_id) || (this.player.friends.indexOf(friend_id) != -1);
-                }
+                },
+                requestGroup: function(friend_id) {
+                    this.player.group.members.push(friend_id);
+                },
+                playerInGroup: function() {
+                    return this.player.group.name != '' && this.player.group.members.length === 0;
+                },
+                playerAlreadyGrouped: function(){
+                    return this.player._id == this.player.group._id
+                },
             },
             computed: {
                 playerHistory: function () {
