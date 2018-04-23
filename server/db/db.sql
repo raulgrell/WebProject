@@ -5,16 +5,9 @@ create database DeckOfLife;
 CREATE TABLE Player (
     id_player INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     display_name VARCHAR(50),
-    age SMALLINT
-    -- CONSTRAINT pk_player PRIMARY KEY (id)
+    age INTEGER
+    CONSTRAINT pk_player PRIMARY KEY (id_player)
 );
-
-ALTER TABLE Player ADD CONSTRAINT pk_player PRIMARY KEY (id_player);
-
-INSERT INTO Player(id_player, display_name, age) VALUES (1, 'Raul', 27);
-INSERT INTO Player(id_player, display_name, age) VALUES (2, 'Pedro', 20);
-INSERT INTO Player(id_player, display_name, age) VALUES (3, 'Bruno', 60);
-
 
 -- Users
 
@@ -22,19 +15,11 @@ CREATE TABLE PlayerUser (
     id_user INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_player INTEGER,
     email VARCHAR(50) NOT NULL UNIQUE,
-    pass VARCHAR(50) NOT NULL
-    -- CONSTRAINT pk_user PRIMARY KEY (id),
-    -- CONSTRAINT fk_user_player FOREIGN KEY (id_player) REFERENCES Player(id_player)
+    pass VARCHAR(50) NOT NULL,
+    CONSTRAINT pk_user PRIMARY KEY (id_user),
+    CONSTRAINT pk_user PRIMARY KEY (id),
+    CONSTRAINT fk_user_player FOREIGN KEY (id_player) REFERENCES Player(id_player)
 );
-
-ALTER TABLE PlayerUser ADD CONSTRAINT pk_user PRIMARY KEY (id_user);
-
-INSERT INTO PlayerUser(id_player, email, pass) VALUES ( 1, 'raulgrell@gmail.com', 'raulgrell');
-INSERT INTO PlayerUser(id_player, email, pass) VALUES ( 2, 'pedro.aca@gmail.com', 'pedro');
-INSERT INTO PlayerUser(id_player, email, pass) VALUES ( 3, 'bruno.silva@gmail.com', 'bruno');
-
-ALTER TABLE PlayerUser ADD CONSTRAINT fk_user_player FOREIGN KEY (id_player) REFERENCES Player(id_player);
-
 
 -- Groups
 

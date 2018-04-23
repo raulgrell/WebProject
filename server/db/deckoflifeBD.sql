@@ -1,22 +1,3 @@
-
-CREATE TABLE Player (
-    id INT NOT NULL AUTO_INCREMENT UNIQUE,
-    first_name TEXT(50),
-    nickname VARCHAR(10) NOT NULL,
-    age INT(3),
-    CONSTRAINT pk_player PRIMARY KEY (id)
-);
-
-CREATE TABLE UserInfo (
-    id INT NOT NULL AUTO_INCREMENT UNIQUE,
-    id_player INT,
-    CONSTRAINT pk_user PRIMARY KEY (id),
-    CONSTRAINT fk_user_player FOREIGN KEY (id_player)
-        REFERENCES Player (id),
-    email VARCHAR(50) NOT NULL,
-    pass VARCHAR(50) NOT NULL
-);
-
 CREATE TABLE PlayerGroup (
     id INT NOT NULL AUTO_INCREMENT UNIQUE,
     name_group VARCHAR(20) NOT NULL,
