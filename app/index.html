@@ -156,9 +156,8 @@
                         </div>
                     </div>
                     <h1 class="title is-3">Group</h1>
-                    <!-- TODO: If no group show form or button -->
                     <div>
-                         <ul v-if="playerAlreadyGrouped()">
+                         <ul v-if="playerInGroup()">
                              <li v-for="(item, index) in player.group.members">
                                  {{ item.name }}
                              </li>
@@ -447,11 +446,8 @@
                     this.player.group.members.push(friend_id);
                 },
                 playerInGroup: function() {
-                    return this.player.group.name != '' && this.player.group.members.length === 0;
-                },
-                playerAlreadyGrouped: function(){
-                    return this.player._id == this.player.group._id
-                },
+                    this.player.group.members.length !== 0;
+                }
             },
             computed: {
                 playerHistory: function () {
