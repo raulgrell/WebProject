@@ -29,5 +29,10 @@ module.exports = function (app) {
         console.log('Publishing all events to all authenticated users.');
         return app.channel('authenticated');
     });
+
+    app.publish((data, hook) => {
+        console.log('Publishing all events to all anonymous users.');
+        return app.channel('anonymous');
+    });
 };
 

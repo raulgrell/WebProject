@@ -26,7 +26,7 @@ CREATE TABLE PlayerGroup (
 );
 
 -- Memberships
-CREATE TABLE GroupMembership (
+CREATE TABLE GroupMember (
     id_member INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_player INTEGER NOT NULL,
     id_group INTEGER NOT NULL
@@ -54,7 +54,6 @@ CREATE TABLE Cards (
 );
 
 -- PlayerCards
-
 CREATE TABLE PlayerCard (
     id_playercard INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_player INTEGER,
@@ -67,7 +66,6 @@ CREATE TABLE PlayerCard (
 
 
 -- Location
-
 CREATE TABLE Location (
     id_location INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     display_name VARCHAR(20) NOT NULL
@@ -76,7 +74,6 @@ CREATE TABLE Location (
 
 
 -- Discovered
-
 CREATE TABLE LocationDiscovered (
     id_discovered INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_player INTEGER,
@@ -88,7 +85,6 @@ CREATE TABLE LocationDiscovered (
 
 
 -- Events
-
 CREATE TABLE Event (
     id_event INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     display_name VARCHAR(20) NOT NULL,
@@ -98,7 +94,6 @@ CREATE TABLE Event (
 
 
 -- Attended
-
 CREATE TABLE EventAttended (
     id_attended INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_event INTEGER,

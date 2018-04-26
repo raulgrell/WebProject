@@ -12,7 +12,6 @@ const socketio = require('@feathersjs/socketio');
 const memory = require('feathers-memory');
 
 const knex = require('./db/knex');
-
 const authentication = require('./authentication');
 const services = require('./services');
 const channels = require('./channels');
@@ -35,22 +34,14 @@ app.configure(express.rest());
 app.configure(socketio());
 
 // Enable services
-app.configure(authentication);
 app.configure(knex);
+app.configure(authentication);
 app.configure(services);
 app.configure(channels);
-
 
 // Dynamic Pages
 const indexRouter = require('./routes/index');
 app.use('/pages', indexRouter);
-
-// Live Reload
-// var livereload = require('easy-livereload');
-// app.use(livereload({
-//   watchDirs: [ app.get('public') ],
-//   port: process.env.LIVERELOAD_PORT || 35729
-// }));
 
 // Static pages
 app.use(express.static(app.get('public')));
