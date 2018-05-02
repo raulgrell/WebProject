@@ -26,6 +26,5 @@ module.exports = function (app) {
       }).catch(e => console.error(`Error creating ${tableName} table`, e));
     }
   }).catch( e => console.error(`Error querying ${tableName}`, e));
-  
   return db;
 };

@@ -9,27 +9,15 @@
 
     <link rel="manifest" href="site.webmanifest">
     <link rel="apple-touch-icon" href="icon.png">
-<!-- 
     <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
-        crossorigin="anonymous"></script> -->
+        crossorigin="anonymous"></script>
 
     <script type="text/javascript" src="js/axios.min.js"></script>
     <script type="text/javascript" src="js/socket.io.js"></script>
     <script type="text/javascript" src="js/feathers.js"></script>
     <script type="text/javascript" src="js/vue.js"></script>
     <script type="text/javascript">
-        var socket = io("127.0.0.1:3000");
-        var client = feathers()
-            .configure(feathers.socketio(socket))
-            .configure(feathers.authentication({
-                header: 'Authorization',
-                path: '/authentication',
-                jwtStrategy: 'jwt',
-                entity: 'user',
-                service: 'users',
-                storageKey: 'feathers-jwt',
-                storage: window.localStorage
-            }));
+
     </script>
 
     <link rel="stylesheet" href="css/normalize.css">
@@ -40,21 +28,31 @@
 </head>
 
 <body>
+    <template>
+        
+    </template>
+
     <!-- Card Admin -->
     <template id="card-form">
         <div class="form">
             <div class="field">
                 <label class="label">Name</label>
                 <div class="control">
-                    <input class="input" type="text" name="display_name" placeholder="display_name">
+                    <input class="input" type="text" placeholder="display_name" v-model="card.display_name">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Action</label>
+                <div class="control">
+                    <input class="input" type="text" placeholder="action" v-model="card.action">
                 </div>
             </div>
             <div class="field">
                 <label class="label">Location</label>
                 <div class="control">
-                    <div class="select" name="id_location">
-                        <select>
-                            <option v-for="l in locations" value="l.id_location">{{ l.display_name }}</option>
+                    <div class="select">
+                        <select v-model="card.id_location">
+                            <option v-for="l in locations" :value="l.id_location">{{ l.display_name }}</option>
                         </select>
                     </div>
                 </div>
@@ -62,16 +60,16 @@
             <div class="field">
                 <label class="label">Description</label>
                 <div class="control">
-                    <textarea class="textarea" placeholder="description"></textarea>
+                    <textarea class="textarea" placeholder="description" v-model="card.description"></textarea>
                 </div>
             </div>
 
             <div class="field is-grouped">
                 <div class="control">
-                    <button class="button is-link">Create</button>
+                    <button @click="create()" class="button is-link">Create</button>
                 </div>
                 <div class="control">
-                    <button class="button is-text">Cancel</button>
+                    <button @click="clear()" class="button is-text">Cancel</button>
                 </div>
             </div>
         </div>
@@ -82,29 +80,29 @@
             <div class="field">
                 <label class="label">Name</label>
                 <div class="control">
-                    <input class="input" type="text" placeholder="display_name">
+                    <input class="input" type="text" placeholder="display_name" v-model="player.display_name">
                 </div>
             </div>
             <div class="field">
                 <label class="label">Age</label>
                 <div class="control">
-                    <input class="input" type="number" placeholder="age">
+                    <input class="input" type="number" placeholder="age" v-model="player.age">
                 </div>
             </div>
 
             <div class="field">
                 <label class="label">Description</label>
                 <div class="control">
-                    <textarea class="textarea" placeholder="description"></textarea>
+                    <textarea class="textarea" placeholder="description" v-model="player.description"></textarea>
                 </div>
             </div>
 
             <div class="field is-grouped">
                 <div class="control">
-                    <button class="button is-link">Create</button>
+                    <button @click="create()" class="button is-link">Create</button>
                 </div>
                 <div class="control">
-                    <button class="button is-text">Cancel</button>
+                    <button @click="clear()" class="button is-text">Cancel</button>
                 </div>
             </div>
         </div>
@@ -115,7 +113,7 @@
             <div class="field">
                 <label class="label">Name</label>
                 <div class="control">
-                    <input class="input" type="text" placeholder="display_name">
+                    <input class="input" type="text" placeholder="display_name" v-model="location.display_name">
                 </div>
             </div>
 
@@ -123,8 +121,8 @@
                 <label class="label">Parent Location</label>
                 <div class="control">
                     <div class="select">
-                        <select>
-                            <option v-for="l in locations">{{ l.display_name }}</option>
+                        <select v-model="location.id_parent">
+                            <option v-for="l in locations" :value="l.id_location">{{ l.display_name }}</option>
                         </select>
                     </div>
                 </div>
@@ -133,22 +131,22 @@
             <div class="field">
                 <label class="label">Description</label>
                 <div class="control">
-                    <textarea class="textarea" placeholder="description"></textarea>
+                    <textarea class="textarea" placeholder="description" v-model="location.description"></textarea>
                 </div>
             </div>
 
             <div class="field is-grouped">
                 <div class="control">
-                    <button class="button is-link">Create</button>
+                    <button @click="create()" class="button is-link">Create</button>
                 </div>
                 <div class="control">
-                    <button class="button is-text">Cancel</button>
+                    <button @click="clear()" class="button is-text">Cancel</button>
                 </div>
             </div>
         </div>
     </template>
 
-    <div id="app_root">
+    <div id="app-root">
         <div class="container is-fluid">
             <div class="columns is-page">
 
@@ -184,8 +182,8 @@
                 <!-- Middle -->
                 <div id="player-hand" class="column is-6">
                     <h1 class="title is-3">Hand</h1>
-                    <div class="columns is is-multiline">
-                        <div class="column is-12" v-for="(item, card_index) in playerCards">
+                    <div class="columns is-desktop is-multiline">
+                        <div class="column is-6" v-for="(item, card_index) in playerCards">
                             <div class="card">
                                 <header class="card-header">
                                     <p class="card-header-title">{{ item.display_name }}</p>
@@ -252,18 +250,16 @@
                         </div>
                     </div>
                     <hr>
-                    <div v-if="playerState.invites.length !== 0">
-                        <div v-for="(item, index) in playerState.invites" class="media">
-                            <div class="media-left">
-                                <figure class="image is-48x48">
-                                    <img src="https://bulma.io/images/placeholders/48x48.png" alt="img">
-                                </figure>
-                            </div>
-                            <div class="media-content">
-                                <p>{{ item.player.display_name }} has invited you to join him!</p>
-                                <p>Would you like to <strong>{{ item.card.display_name }}</strong>?</p>
-                                <button @click="acceptGroup(item)" class="is-pulled-right">Accept</button>
-                            </div>
+                    <div v-for="(item, index) in pendingInvites" class="media">
+                        <div class="media-left">
+                            <figure class="image is-48x48">
+                                <img src="https://bulma.io/images/placeholders/48x48.png" alt="img">
+                            </figure>
+                        </div>
+                        <div class="media-content">
+                            <p>{{ item.player.display_name }} has invited you to join him!</p>
+                            <p>Would you like to <strong>{{ item.card.display_name }}</strong>?</p>
+                            <button @click="acceptGroup(item)" class="is-pulled-right">Accept</button>
                         </div>
                     </div>
                 </div>

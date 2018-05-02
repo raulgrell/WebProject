@@ -1,93 +1,190 @@
-function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-}
+var socket = io();
 
-var lfg_invites = [];
+var client = feathers();
+client.configure(feathers.socketio(socket));
+client.configure(feathers.authentication({
+        header: 'Authorization',
+        path: '/authentication',
+        jwtStrategy: 'jwt',
+        entity: 'user',
+        service: 'users',
+        storageKey: 'feathers-jwt',
+        storage: window.localStorage
+}));
 
-var lfgService = window.client.service('/lfg');
+client.authenticate({
+  strategy: 'local',
+  email: window.localStorage.getItem("email"),
+  password: window.localStorage.getItem("password")
+}).then( () => {
 
-lfgService.on('created', function (item) {
-    console.log("LFG Event!")
-    lfg_invites.push(item);
 });
+
+var playerService = client.service('/player');
+playerService.on('created', (item) => {
+    appData.collections.players.push(item);
+});
+
+var locationService = client.service('/location');
+locationService.on('created', (item) => {
+    appData.collections.locations.push(item);
+});
+
+var lfgService = client.service('/lfg');
+lfgService.on('created', (item) => {
+    appData.playerState.invites.push(item);
+});
+
+var cardService = client.service('/card');
+cardService.on('created', (item) => {
+    appData.collections.cards.push(item);
+});
+
+var friendshipService = client.service('/friendship');
+var discoveredService = client.service('/discovered');
+var groupService = client.service('/group');
 
 Vue.component('card-form', {
     props: ['locations'],
+    data: function() {
+        return {
+            card: {
+                id_location: '',
+                display_name: '',
+                action: '',
+                description: ''
+            }
+        }
+    },
+    methods: {
+        create: function() {
+            cardService.create(this.card).then( r => {
+                console.log("Card created: ", r);
+            }).catch(err => {
+                console.log("Card failed: ", err)
+            });
+        }
+    },
     template: document.getElementById("card-form")
 });
 
 Vue.component('location-form', {
     props: ['locations'],
+    data: function() {
+        return {
+            location: {
+                display_name: '',
+                id_parent: '',
+                description: ''
+            }
+        }
+    },
+    methods: {
+        create: function() {
+            locationService.create(this.location).then( r => {
+                console.log("Location created: ", r);
+            }).catch(err => {
+                console.log("Location failed: ", err)
+            });
+        }
+    },
     template: document.getElementById("location-form")
 });
 
 Vue.component('player-form', {
+    data: function() {
+        return {
+            player: {
+                display_name: '',
+                age: '',
+                description: ''
+            }
+        }
+    },
+    methods: {
+        create: function() {
+            playerService.create(this.player).then( r => {
+                console.log("Player created: ", r);
+            }).catch(err => {
+                console.log("Player failed: ", err)
+            });
+        }
+    },
     template: document.getElementById("player-form")
 });
 
-var app_root = new Vue({
-    el: '#app_root',
-    data: {
-        user: {
-            email: '',
-            pass: '',
-        },
-        player: {
-            id_player: 1,
-            display_name: 'Raul',
-            description: 'I like steak'
-        },
-        playerState: {
-            cards: [],
-            deck: [1,2],
-            locations: [1,2],
-            favourites: [1],
-            friends: [],
-            invites: lfg_invites,
-            group: {
-                card: {},
-                name: 'Name',
-                members: []
-            },
-            groups: [],
-            history: []
-        },
-        errors: [],
-        collections: {
-            cards: {
-                data: []
-            },
-            players: {
-                data: []
-            },
-            locations: {
-                data: []
-            },
-            events: {
-                data: []
-            },
-        }
+var appData = {
+    user: {
+        email: '',
+        pass: '',
     },
-    mounted: function() {
-        axios.get("/card").then( response => {
-            this.collections.cards = Object.assign({}, response.data);
-        });
+    player: {
+        id_player: 1,
+        display_name: 'Raul',
+        description: 'I like steak'
+    },
+    playerState: {
+        cards: [],
+        deck: [1, 2],
+        locations: [1, 2],
+        favourites: [1],
+        friends: [2],
+        invites: [],
+        group: {
+            id_lfg: 0,
+            host: {},
+            invited: [],
+            members: [],
+            host: {},
+            card: {},
+        },
+        groups: [],
+        history: []
+    },
+    errors: [],
+    collections: {
+        cards: {
+            data: []
+        },
+        players: {
+            data: []
+        },
+        locations: {
+            data: []
+        },
+        events: {
+            data: []
+        },
+    }
+}
 
-        axios.get("/location").then( response => {
-            this.collections.locations = Object.assign({}, response.data);
-        });
+function populateAppData() {
+    axios.get("/card").then(response => {
+        appData.collections.cards = Object.assign({}, response.data);
+    });
 
-        axios.get("/event").then( response => {
-            this.collections.events = Object.assign({}, response.data);
-        });
+    axios.get("/location").then(response => {
+        appData.collections.locations = Object.assign({}, response.data);
+    });
 
-        axios.get("/player").then( response => {
-            this.collections.players = Object.assign({}, response.data);
-        });
+    axios.get("/event").then(response => {
+        appData.collections.events = Object.assign({}, response.data);
+    });
 
-        axios.get("/lfg").then( response => {
-            this.playerState.invites = response.data;
-        });
+    axios.get("/player").then(response => {
+        appData.collections.players = Object.assign({}, response.data);
+    });
+
+    axios.get("/lfg").then(response => {
+        appData.playerState.invites = response.data;
+    });
+}
+
+var app = new Vue({
+    el: '#app-root',
+    data: appData,
+    mounted: function () {
+        populateAppData();
     },
     methods: {
         playCard: function (index) {
@@ -95,10 +192,10 @@ var app_root = new Vue({
             this.playerState.cards.splice(index, 1);
         },
         playGroupCard: function () {
-            this.playerState.history.push(this.playerState.group.card);
             const index = this.playerState.cards.indexOf(this.playerState.group.card);
-            this.playerState.group.card = {};
+            this.playerState.history.push(this.playerState.group.card);
             this.playerState.cards.splice(index, 1);
+            this.playerState.group.card = {};
         },
         dropCard: function (index) {
             this.playerState.cards.splice(index, 1);
@@ -114,35 +211,39 @@ var app_root = new Vue({
         isFriend: function (id_friend) {
             return (this.player.id_player == id_friend) || (this.playerState.friends.indexOf(id_friend) != -1);
         },
-        requestGroup: function(friend) {
-            client.service('/lfg').create(this.playerState.group).then( response => {
+        requestGroup: function (friend) {
+            lfgService.create(this.playerState.group).then(response => {
                 console.log("Created LFG: ", response);
-            }).catch(err => {   
+            }).catch(err => {
                 console.log("LFG Failed: ", error);
             });
-            this.playerState.group.members.push({...friend, accepted: false});
+            this.playerState.group.members.push({ ...friend, accepted: false });
         },
-        acceptGroup: function(invite) {
-            client.service('/lfg').create(this.playerState.group).then( response => {
-                console.log("Created LFG: ", response);
-            }).catch(err => {   
-                console.log("LFG Failed: ", error);
+        acceptGroup: function (invite) {
+            lfgService.patch(invite.id, { accepted: true }).then(response => {
+                console.log("Updated LFG: ", response);
+            }).catch(err => {
+                console.log("Accept failed: ", err);
             });
-            this.playerState.group.members.push({...friend, accepted: false});
+            const index = this.playerState.invites.indexOf(invite);
+            this.playerState.invites[index].accepted = true;
         },
         findGroup: function (id_card) {
             this.playerState.group.card = this.collections.cards.data.find(c => c.id_card == id_card) || {};
             this.playerState.group.player = this.player;
             this.playerState.group.members = [];
         },
-        lookingForGroup: function() {
+        lookingForGroup: function () {
             return this.playerState.group.card.id_card !== undefined;
         },
-        setInactive: function(id_element) {
+        setInactive: function (id_element) {
             document.getElementById(id_element).classList.remove('is-active');
         }
     },
     computed: {
+        pendingInvites: function () {
+            return this.playerState.invites.filter(i => !i.accepted);
+        },
         playerHistory: function () {
             return this.playerState.history.map(c => this.collections.cards.data.find(x => c == x.id_card));
         },
@@ -166,23 +267,20 @@ var app_root = new Vue({
         playerFriends: function () {
             return this.collections.players.data.filter(p => this.playerState.friends.includes(p.id_player));
         },
-        locationCards : function () {
+        locationCards: function () {
             return this.collections.cards.data.filter(c => this.playerState.locations.includes(c.id_location));
         },
         playerEvents: function () {
             return this.collections.events.data.filter(e => this.playerState.locations.includes(e.id_location));
         },
-        allCards: function () {
-            return this.collections.cards.data;
-        },
-        allEvents: function () {
-            return this.collections.events.data;
-        },
-        allLocations: function () {
-            return this.collections.locations.data;
-        },
-        allPlayers: function () {
-            return this.collections.players.data;
-        }
+        allCards: () => appData.collections.cards.data,
+        allEvents: () => appData.collections.events.data,
+        allLocations: () => appData.collections.locations.data,
+        allPlayers: () => appData.collections.players.data,
     }
-})
+});
+
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
