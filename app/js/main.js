@@ -128,7 +128,7 @@ var appData = {
         deck: [1, 2],
         locations: [1, 2],
         favourites: [1],
-        friends: [2],
+        friends: [],
         invites: [],
         group: {
             id_lfg: 0,
@@ -144,6 +144,9 @@ var appData = {
     errors: [],
     collections: {
         cards: {
+            data: []
+        },
+        friendships: {
             data: []
         },
         players: {
@@ -173,6 +176,10 @@ function populateAppData() {
 
     axios.get("/player").then(response => {
         appData.collections.players = Object.assign({}, response.data);
+    });
+
+    axios.get("/friends/" + appData.player.id_player).then(response => {
+        appData.collections.friendships = response;
     });
 
     axios.get("/lfg").then(response => {
@@ -206,6 +213,10 @@ var app = new Vue({
             this.playerState.cards.push(this.playerState.deck[index]);
         },
         addFriend: function (id_friend) {
+            axios.post("/friends/" + appData.player.id_player + "/" + id_friend).then(response => {
+                appData.collections.friendships = response;
+            });
+
             this.playerState.friends.push(id_friend);
         },
         isFriend: function (id_friend) {
@@ -264,9 +275,6 @@ var app = new Vue({
                 this.playerState.locations.includes(l.id_location) &&
                 this.playerState.favourites.includes(l.id_location));
         },
-        playerFriends: function () {
-            return this.collections.players.data.filter(p => this.playerState.friends.includes(p.id_player));
-        },
         locationCards: function () {
             return this.collections.cards.data.filter(c => this.playerState.locations.includes(c.id_location));
         },
@@ -277,6 +285,7 @@ var app = new Vue({
         allEvents: () => appData.collections.events.data,
         allLocations: () => appData.collections.locations.data,
         allPlayers: () => appData.collections.players.data,
+        allFriends: () => appData.collections.friendships.data,
     }
 });
 

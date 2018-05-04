@@ -10,7 +10,7 @@
   "nedb": "../data",
   "mysql": {
     "client": "mysql2",
-    "connection": "mysql://web:web@localhost:3306/web"
+    "connection": "mysql://root:palavrapassengraçada12345@localhost:3306/deckoflife"
   },
   "postgres": {
     "client": "pg",
