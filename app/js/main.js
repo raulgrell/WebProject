@@ -281,6 +281,12 @@ var app = new Vue({
         playerEvents: function () {
             return this.collections.events.data.filter(e => this.playerState.locations.includes(e.id_location));
         },
+
+        refresh: function(){
+
+            location.reload();
+        },
+
         allCards: () => appData.collections.cards.data,
         allEvents: () => appData.collections.events.data,
         allLocations: () => appData.collections.locations.data,
