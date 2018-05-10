@@ -1,7 +1,6 @@
 create database DeckOfLife;
 
 -- Players
-
 CREATE TABLE Player (
     id_player INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     display_name VARCHAR(50),
@@ -10,7 +9,6 @@ CREATE TABLE Player (
 );
 
 -- Users
-
 CREATE TABLE PlayerUser (
     id_user INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_player INTEGER,
@@ -21,7 +19,6 @@ CREATE TABLE PlayerUser (
 );
 
 -- Groups
-
 CREATE TABLE PlayerGroup (
     id_group INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     display_name VARCHAR(20) NOT NULL,
@@ -29,7 +26,6 @@ CREATE TABLE PlayerGroup (
 );
 
 -- Memberships
-
 CREATE TABLE GroupMember (
     id_member INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_group INTEGER NOT NULL,
@@ -41,7 +37,6 @@ CREATE TABLE GroupMember (
 
 
 -- Friends
-
 CREATE TABLE Friendship (
     id_friendship INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_player INTEGER,
@@ -53,7 +48,6 @@ CREATE TABLE Friendship (
 
 
 -- Cards
-
 CREATE TABLE Cards (
     id_card INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_location INTEGER,
@@ -63,7 +57,6 @@ CREATE TABLE Cards (
 );
 
 -- PlayerCards
-
 CREATE TABLE PlayerCard (
     id_playercard INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_player INTEGER,
@@ -75,7 +68,6 @@ CREATE TABLE PlayerCard (
 );
 
 -- Location
-
 CREATE TABLE Location (
     id_location INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     display_name VARCHAR(20) NOT NULL,
@@ -83,7 +75,6 @@ CREATE TABLE Location (
 );
 
 -- Discovered
-
 CREATE TABLE LocationDiscovered (
     id_discovered INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_player INTEGER,
@@ -94,9 +85,7 @@ CREATE TABLE LocationDiscovered (
     CONSTRAINT fk_discovered_location FOREIGN KEY (id_location) REFERENCES Location (id_location)
 );
 
-
 -- Events
-
 CREATE TABLE Event (
     id_event INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     display_name VARCHAR(20) NOT NULL,
@@ -104,9 +93,7 @@ CREATE TABLE Event (
     CONSTRAINT pk_event PRIMARY KEY (id_event)
 );
 
-
 -- Attended
-
 CREATE TABLE EventAttended (
     id_attended INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_event INTEGER,

@@ -47,6 +47,42 @@ router.post('/friends/:player_id/:friend_id', function(req, res, next) {
 //Discoveres places
 
 router.get('/discovered/player/:id', function(req, res, next) {
+  connection.execute(`
+    SELECT * FROM discovered WHERE id_player = ?,
+  `,[req.params.id],
+    function (error, results, fields) {
+      if (error) throw error;
+      console.log("Results: ", results);
+      res.render('index', { title: 'Hello', results: JSON.stringify(results) });
+    }
+  );
+});
+
+router.post('/state/dealCard', function(req, res, next) {
+  connection.execute(
+    'SELECT * FROM discovered WHERE id_player = ?',
+    [req.params.id],
+    function (error, results, fields) {
+      if (error) throw error;
+      console.log("Results: ", results);
+      res.render('index', { title: 'Hello', results: JSON.stringify(results) });
+    }
+  );
+});
+
+router.post('/state/dropCard', function(req, res, next) {
+  connection.execute(
+    'SELECT * FROM discovered WHERE id_player = ?',
+    [req.params.id],
+    function (error, results, fields) {
+      if (error) throw error;
+      console.log("Results: ", results);
+      res.render('index', { title: 'Hello', results: JSON.stringify(results) });
+    }
+  );
+});
+
+router.post('/state/playCard', function(req, res, next) {
   connection.execute(
     'SELECT * FROM discovered WHERE id_player = ?',
     [req.params.id],

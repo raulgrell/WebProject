@@ -1,0 +1,13 @@
+<template>
+    <div>
+        <panel-hand></panel-hand>
+        <hr>
+        <panel-deck></panel-deck>
+        <hr>
+        <panel-locations></panel-locations>
+        <hr>
+        <panel-friends></panel-friends>
+        <hr>
+        <panel-admin></panel-admin>
+    </div>
+</template>

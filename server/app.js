@@ -11,9 +11,10 @@ const express = require('@feathersjs/express');
 const socketio = require('@feathersjs/socketio');
 const memory = require('feathers-memory');
 
-const knex = require('./db/knex');
+const knex = require('./knex');
 const authentication = require('./authentication');
 const services = require('./services');
+const channels = require('./channels');
 
 const app = express(feathers());
 
@@ -36,41 +37,15 @@ app.configure(socketio());
 app.configure(knex);
 app.configure(authentication);
 app.configure(services);
+app.configure(channels);
 
-// Dynamic Pages
+// Dynamic Routes
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 
-// Static pages
+// Static resources
 app.use(express.static(app.get('public')));
 app.use(express.errorHandler());
-
-// Socket events
-app.on('connection', connection => {
-    app.channel('anonymous').join(connection);
-    console.log('a user connected');
-    app.on('disconnect', function() {
-        console.log('user disconnected');
-    });
-});
-
-app.on('login', (authResult, { connection }) => {
-    if (connection) {
-        const user = connection.user;
-        app.channel('anonymous').leave(connection);
-        app.channel('authenticated').join(connection);
-    }
-});
-
-app.publish((data, hook) => {
-    console.log('Publishing all events to all authenticated users.');
-    return app.channel('authenticated');
-});
-
-app.service('/lfg').publish((data, ctx) => {
-    console.log('Publishing all events to all anonymous users.');
-    return app.channel('anonymous');
-});
 
 // Main
 const port = app.get('port');
@@ -84,3 +59,5 @@ app.listen(port).on('listening', () =>
 process.on('unhandledRejection', (reason, p) =>
   logger.error('Unhandled Rejection at: Promise ', p, reason)
 );
+
+module.exports = app;

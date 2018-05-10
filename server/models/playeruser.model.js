@@ -1,5 +1,4 @@
 module.exports = function (app) {
-  
   const db = app.get('knexClient');
   const tableName = 'PlayerUser';
 

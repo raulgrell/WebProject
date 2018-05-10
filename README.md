@@ -9,13 +9,13 @@ The Deck of Life is a game about social exploration.
 Clone this repository
 
 ``` 
-git clone https://github.com/raulgrell/WebProject 
-```
-
-Install the package
-
-```
+git clone https://github.com/raulgrell/WebProject
 cd WebProject
+```
+
+Install the dependencies
+
+```
 npm install
 ```
 

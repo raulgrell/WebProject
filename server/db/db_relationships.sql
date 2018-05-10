@@ -1,42 +1,27 @@
--- Players
-ALTER TABLE Player ADD CONSTRAINT pk_player PRIMARY KEY (id_player);
+SELECT * FROM discovered WHERE id_player = ?
 
--- Users
-ALTER TABLE PlayerUser ADD CONSTRAINT pk_user PRIMARY KEY (id_user);
-ALTER TABLE PlayerUser ADD CONSTRAINT fk_user_player FOREIGN KEY (id_player) REFERENCES Player(id_player);
+-- PlayerUser -> Player
+ALTER TABLE playeruser ADD CONSTRAINT fk_user_player FOREIGN KEY (id_player) REFERENCES Player(id_player);
 
--- Groups
-ALTER TABLE PlayerGroup ADD CONSTRAINT pk_group PRIMARY KEY (id_group);
+-- Member -> Player + Group
+ALTER TABLE Member ADD CONSTRAINT fk_member_player FOREIGN KEY (id_player) REFERENCES Player (id_player);
+ALTER TABLE Member ADD CONSTRAINT fk_member_group FOREIGN KEY (id_group) REFERENCES `Group` (id_group);
 
--- Memberships
-ALTER TABLE GroupMember ADD CONSTRAINT pk_member PRIMARY KEY (id_member);
-ALTER TABLE GroupMember ADD CONSTRAINT fk_member_player FOREIGN KEY (id_player) REFERENCES Player (id_player);
-ALTER TABLE GroupMember ADD CONSTRAINT fk_member_group FOREIGN KEY (id_group) REFERENCES PlayerGroup (id_group);
-
--- Friends
-ALTER TABLE Friendship ADD CONSTRAINT pk_friendship PRIMARY KEY (id_friendship);
+-- Friend -> Player + Player
 ALTER TABLE Friendship ADD CONSTRAINT fk_friendship_player FOREIGN KEY (id_player) REFERENCES Player (id_player);
 ALTER TABLE Friendship ADD CONSTRAINT fk_friendship_friend FOREIGN KEY (id_friend) REFERENCES Player (id_player);
 
--- Cards
-ALTER TABLE Cards ADD CONSTRAINT pk_card PRIMARY KEY (id_card);
-ALTER TABLE Cards ADD CONSTRAINT fk_card_location FOREIGN KEY (id_location) REFERENCES Location (id_location);
+-- Card -> Location
+ALTER TABLE Card ADD CONSTRAINT fk_card_location FOREIGN KEY (id_location) REFERENCES Location (id_location);
 
--- PlayerCards
-ALTER TABLE PlayerCard ADD CONSTRAINT pk_playercard PRIMARY KEY (id_playercard);
+-- PlayerCards -> Player + Group
 ALTER TABLE PlayerCard ADD CONSTRAINT fk_playercard_player FOREIGN KEY (id_player) REFERENCES Player (id_player);
-ALTER TABLE PlayerCard ADD CONSTRAINT fk_playercard_group FOREIGN KEY (id_group) REFERENCES PlayerGroup (id_group);
+ALTER TABLE PlayerCard ADD CONSTRAINT fk_playercard_group FOREIGN KEY (id_group) REFERENCES `Group` (id_group);
 
--- Location
-ALTER TABLE Location ADD CONSTRAINT pk_location PRIMARY KEY (id_location);
+-- Discovered -> Player + Location
+ALTER TABLE Discovered ADD CONSTRAINT fk_discovery_player FOREIGN KEY (id_player) REFERENCES Player (id_player);
+ALTER TABLE Discovered ADD CONSTRAINT fk_discovery_location FOREIGN KEY (id_location) REFERENCES Location (id_location);
 
--- Discovered
-ALTER TABLE LocationDiscovered ADD CONSTRAINT fk_discovery_player FOREIGN KEY (id_player) REFERENCES Player (id_player);
-ALTER TABLE LocationDiscovered ADD CONSTRAINT fk_discovery_location FOREIGN KEY (id_location) REFERENCES Location (id_location);
-
--- Events
-ALTER TABLE Event ADD CONSTRAINT pk_event PRIMARY KEY (id_event);
-
--- Attended
-ALTER TABLE EventAttended ADD CONSTRAINT fk_attended_event FOREIGN KEY (id_event) REFERENCES Event (id_event);
-ALTER TABLE EventAttended ADD CONSTRAINT fk_attended_card  FOREIGN KEY (id_deck_card) REFERENCES PlayerCard (id_playercard);
+-- Attended -> Event + PlayerCard
+ALTER TABLE Attended ADD CONSTRAINT fk_attended_event FOREIGN KEY (id_event) REFERENCES Event (id_event);
+ALTER TABLE Attended ADD CONSTRAINT fk_attended_card  FOREIGN KEY (id_playercard) REFERENCES PlayerCard (id_playercard);

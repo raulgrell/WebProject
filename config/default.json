@@ -1,13 +1,14 @@
 {
   "host": "localhost",
   "port": 3000,
-  "public": "../app/",
+  "public": "../public/",
   "paginate": {
     "default": 10,
     "max": 50
   },
   "knexDriver": "mysql",
   "nedb": "../data",
+  "mysqlClient": {},
   "mysql": {
     "client": "mysql2",
     "connection": "mysql://root:palavrapassengraçada12345@localhost:3306/deckoflife"
@@ -38,35 +39,6 @@
       "entity": "user",
       "usernameField": "email",
       "passwordField": "password"
-    },
-      "google": {
-      "clientID": "your google client id",
-      "clientSecret": "your google client secret",
-      "successRedirect": "/",
-      "scope": [
-        "profile openid email"
-      ]
-    },
-    "facebook": {
-      "clientID": "your facebook client id",
-      "clientSecret": "your facebook client secret",
-      "successRedirect": "/",
-      "scope": [
-        "public_profile",
-        "email"
-      ],
-      "profileFields": [
-        "id",
-        "displayName",
-        "first_name",
-        "last_name",
-        "email",
-        "gender",
-        "profileUrl",
-        "birthday",
-        "picture",
-        "permissions"
-      ]
     },
     "github": {
       "clientID": "your github client id",
