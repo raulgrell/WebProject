@@ -11,6 +11,15 @@ html, body {
     background-color: #fafafa
 }
 
+.body-bg-color {
+  padding: 1em;
+    background-color: #FAFAFA;
+    background-image: url("bg.jpg"); /*not final image*/
+      background-size: 100% 100%;
+    background-repeat: no-repeat;
+
+}
+
 .is-page {
     min-height: 100vh;
     padding: 2em 0;
@@ -34,6 +43,12 @@ ul {
     list-style: square;
 }
 
+.RegForm{
+    width: 400px;
+    margin: 0 auto;
+}
+
+
 @media only screen and (min-width: 35em) {
-    
+
 }

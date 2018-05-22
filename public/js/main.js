@@ -73,9 +73,9 @@ var appData = {
         pass: '',
     },
     player: {
-        id_player: 1,
-        display_name: 'Raul',
-        description: 'I like steak'
+        id_player: '1',
+        display_name: 'name',
+        description: 'asd'
     },
     playerState: {
         cards: [],
@@ -176,6 +176,32 @@ var app = new Vue({
 
             this.playerState.friends.push(id_friend);
         },
+
+    register: function () {
+          var name = document.getElementById("NameReg").value;
+          var email = document.getElementById("EmailReg").value;
+          var pass = document.getElementById("PassReg").value;
+          var checkPass = document.getElementById("checkPass").value;
+
+          if(checkPass==pass){
+            axios.post("/register", {
+              name, email, pass
+            }).then(response => {
+                window.location.href="/";
+            });
+          }
+        },
+
+        login: function(){
+          var namelog = document.getElementById("NameLog").value;
+          var passlog = document.getElementById("PassLog").value;
+
+          axios.post("/login",{
+            name, pass
+          })
+        }
+
+
         isFriend: function (id_friend) {
             return (this.player.id_player == id_friend) || (this.playerState.friends.indexOf(id_friend) != -1);
         },

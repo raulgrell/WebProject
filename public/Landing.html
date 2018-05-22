@@ -1,0 +1,128 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
+  crossorigin="anonymous"></script>
+
+  <script type="text/javascript" src="lib/axios.min.js"></script>
+  <script type="text/javascript" src="lib/socket.io.js"></script>
+  <script type="text/javascript" src="lib/feathers.js"></script>
+  <script type="text/javascript" src="lib/vue.js"></script>
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/bulma.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <title>Web Project</title>
+</head>
+
+<body class="body-bg-color">
+<div id="app-root">
+  <div>
+    <img src="logo.png" height="48" width="72.25" ></br>
+    <p class="is-size-2 has-text-centered">Discover the world, one card at a time</p></br></br></br>
+  </div>
+
+  <div class="columns">
+    <div class="column">
+
+      <p class="is-size-3 ">Find new people<p>
+        <p class="is-size-5 tooltiptext">Meet people with the same interests as you and make new friends!<p>
+        </br>
+
+        <p class="is-size-3">Visit unknown locations with friends<p>
+          <p class="is-size-5 tooltiptext">Get to know new locations and places alone, or better, with a group of friends! <p>
+          </br>
+
+          <p class="is-size-3">Collect cards to make your deck even bigger<p>
+            <p class="is-size-5 tooltiptext">Get cards by doing activities and by discovering new places!<p>
+            </br>
+
+            <p class="is-size-3">Share your interests and favourite places<p>
+              <p class="is-size-5 tooltiptext">Show everyone you loved a certain place or activity<p>
+
+              </div>
+
+              <div class="column">
+                <div class="RegForm">
+                  <div class="box">
+                    <p class="is-size-5 has-text-centered">Join us now!<p>
+
+                      <div class="field">
+                        <label class="label">Username</label>
+                        <div class="control has-icons-left has-icons-right">
+                          <input id="NameReg" class="input" required="required" type="text" placeholder="User Name">
+                          <span class="icon is-small is-left">
+                            <i class="fas fa-user"></i>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="field">
+                        <label class="label">Email</label>
+                        <div class="control has-icons-left has-icons-right">
+                          <input id="EmailReg" class="input" required="required" type="email" placeholder="E-mail">
+                          <span class="icon is-small is-left">
+                            <i class="fas fa-envelope"></i>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="field">
+                        <label class="label">Password</label>
+                        <div class="control has-icons-left has-icons-right">
+                          <input id="PassReg" name="Password" class="input" required="required" type="password" placeholder="password">
+                          <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="field">
+                        <label class="label">Repeat Password</label>
+                        <div class="control has-icons-left has-icons-right">
+                          <input id="checkPass" name="CheckPassword" class="input" required="required" type="password" placeholder="Repeat Password">
+                          <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                          </span>
+                        </div>
+                      </div>
+
+
+                      <div class="field">
+                        <div class="control">
+                          <label class="checkbox">
+                            <input type="checkbox">
+                            I agree to the <a href="#">terms and conditions</a>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div class="field is-grouped">
+                        <div class="control">
+                          <button @click="register()" class="button is-link">Submit</button>
+                        </div>
+
+                        <div class="control">
+                          <button class="button">already have an account?</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+</div>
+              <script type="text/javascript" src="js/util.js"></script>
+              <script type="text/javascript" src="js/services.js"></script>
+              <script type="text/javascript" src="js/main.js"></script>
+            </body>
+
+            </html>
