@@ -91,5 +91,4 @@ module.exports = function (app) {
     name: 'playeruser',
     paginate,
   }));
-
 };

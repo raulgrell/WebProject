@@ -1,6 +1,3 @@
-# Read about how to use .gitignore: https://help.github.com/articles/ignoring-files
-# Useful .gitignore templates: https://github.com/github/gitignore
-
 # Ignore build artifacts
 node_modules/
 
@@ -8,6 +5,9 @@ node_modules/
 # with the repositories
 todo/
 
+# Ignore parcel cache and build output
+.cache/
+dist/*
 
 # These are generally useful to avoid clutter created by operating systems
 # or other applications.

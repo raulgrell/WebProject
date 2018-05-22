@@ -147,27 +147,27 @@
                 <!-- Left -->
                 <div class="column is-3">
                     <h1 class="title">Locations</h1>
-                    <div v-for="(item, index) in playerLocations" class="media">
+                    <div v-for="(location, index) in playerState.locations" class="media">
                         <div class="media-left">
                             <figure class="image is-32x32">
                                 <img src="https://bulma.io/images/placeholders/32x32.png" alt="img">
                             </figure>
                         </div>
                         <div class="media-content">
-                            <p>{{ item.display_name }}</p>
+                            <p>{{ location.display_name }}</p>
                         </div>
                     </div>
-                    <p class="has-text-right">{{ playerLocations.length }} / {{ allLocations.length }}</p>
+                    <p class="has-text-right">{{ playerState.locations.length }} / {{ allLocations.length }}</p>
                     <hr>
                     <h1 class="title">Events</h1>
-                    <div v-for="(item, index) in playerEvents" class="media">
+                    <div v-for="(event, index) in playerEvents" class="media">
                         <div class="media-left">
                             <figure class="image is-32x32">
                                 <img src="https://bulma.io/images/placeholders/32x32.png" alt="img">
                             </figure>
                         </div>
                         <div class="media-content">
-                            <p>{{ item.display_name }}</p>
+                            <p>{{ event.display_name }}</p>
                         </div>
                     </div>
                     <p class="has-text-right">{{ playerEvents.length }} / {{ allEvents.length }}</p>
@@ -177,20 +177,20 @@
                 <div id="player-hand" class="column is-6">
                     <h1 class="title is-3">Hand</h1>
                     <div class="columns is-desktop is-multiline">
-                        <div class="column is-6" v-for="(item, card_index) in playerCards">
+                        <div class="column is-6" v-for="(card, card_index) in playerState.cards">
                             <div class="card">
                                 <header class="card-header">
-                                    <p class="card-header-title">{{ item.display_name }}</p>
+                                    <p class="card-header-title">{{ card.display_name }}</p>
                                 </header>
                                 <div class="card-content">
                                     <div class="content">
-                                        <p>{{ item.description }}</p>
+                                        <p>{{ card.description }}</p>
                                     </div>
                                 </div>
                                 <footer class="card-footer">
-                                    <div @click="playCard(card_index)" class="card-footer-item">Play</div>
-                                    <div @click="dropCard(card_index)" class="card-footer-item">Discard</div>
-                                    <div @click="findGroup(item.id_card)" class="card-footer-item">Find Group</div>
+                                    <div @click="playCard(card, card_index)" class="card-footer-item">Play</div>
+                                    <div @click="dropCard(card, card_index)" class="card-footer-item">Discard</div>
+                                    <div @click="findGroup(card, card_index)" class="card-footer-item">Find Group</div>
                                 </footer>
                             </div>
                         </div>
@@ -202,15 +202,15 @@
                 <!-- Right -->
                 <div class="column is-3">
                     <h1 class="title is-3">Friends</h1>
-                    <div v-for="(item, index) in allFriends" class="media">
+                    <div v-for="(friend, index) in allFriends" class="media">
                         <div class="media-left">
                             <figure class="image is-48x48">
                                 <img src="https://bulma.io/images/placeholders/48x48.png" alt="img">
                             </figure>
                         </div>
                         <div class="media-content">
-                            <p>{{ item.friend_name }}</p>
-                            <button @click="requestGroup(item)" class="is-pulled-right">Add To Group</button>
+                            <p>{{ friend.friend_name }}</p>
+                            <button @click="requestGroup(friend)" class="is-pulled-right">Add To Group</button>
                         </div>
                     </div>
                     <hr>
@@ -231,8 +231,8 @@
                                     </div>
                                     <p class="has-text-weight-bold">Group Members</p>
                                     <ul>
-                                        <li v-for="(item, index) in playerState.group.members">
-                                            {{ item.display_name }} - {{ item.accepted ? "Ready!" : "Waiting..." }}
+                                        <li v-for="(member, index) in playerState.group.members">
+                                            {{ member.display_name }} - {{ member.accepted ? "Ready!" : "Waiting..." }}
                                         </li>
                                     </ul>
                                 </div>
@@ -270,20 +270,20 @@
                     <aside class="menu">
                         <p class="menu-label"> Filter by location </p>
                         <ul class="menu-list">
-                            <li v-for="(item, index) in playerLocations">
-                                <a>{{ item.display_name }} </a>
+                            <li v-for="(location, index) in playerState.locations">
+                                <a>{{ location.display_name }} </a>
                             </li>
                         </ul>
                         <p class="menu-label"> Filter by status </p>
                         <ul class="menu-list">
                             <li>
-                                <a>Played ({{ historyCards.length }}/{{ allCards.length }})</a>
+                                <a>Played ({{ playerState.history.length }}/{{ allCards.length }})</a>
                             </li>
                             <li>
-                                <a>Collected ({{ deckCards.length }}/{{ allCards.length }})</a>
+                                <a>Collected ({{ playerState.deck.length }}/{{ allCards.length }})</a>
                             </li>
                             <li>
-                                <a>Discovered ({{ locationCards.length }}/{{ allCards.length }})</a>
+                                <a>Discovered ({{ playerState.locations.length }}/{{ allCards.length }})</a>
                             </li>
                         </ul>
                     </aside>
@@ -292,14 +292,14 @@
                 <div class="column is-9">
                     <h2 class="subtitle">Played</h2>
                     <div class="columns is-multiline">
-                        <div class="column is-3" v-for="(item, card_index) in historyCards">
+                        <div class="column is-3" v-for="(card, card_index) in playerState.history">
                             <div class="card">
                                 <header class="card-header">
-                                    <p class="card-header-title">{{ item.display_name }}</p>
+                                    <p class="card-header-title">{{ card.display_name }}</p>
                                 </header>
                                 <div class="card-content">
                                     <div class="content">
-                                        <p>{{ item.description }}</p>
+                                        <p>{{ card.description }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -307,14 +307,14 @@
                     </div>
                     <h2 class="subtitle">Collected</h2>
                     <div class="columns is-multiline">
-                        <div class="column is-3" v-for="(item, card_index) in deckCards">
+                        <div class="column is-3" v-for="(card, card_index) in playerState.deck">
                             <div class="card">
                                 <header class="card-header">
-                                    <p class="card-header-title">{{ item.display_name }}</p>
+                                    <p class="card-header-title">{{ card.display_name }}</p>
                                 </header>
                                 <div class="card-content">
                                     <div class="content">
-                                        <p>{{ item.description }}</p>
+                                        <p>{{ card.description }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -322,14 +322,14 @@
                     </div>
                     <h2 class="subtitle">Discovered</h2>
                     <div class="columns is-multiline">
-                        <div class="column is-3" v-for="(item, card_index) in locationCards">
+                        <div class="column is-3" v-for="(card, card_index) in playerState.locations">
                             <div class="card">
                                 <header class="card-header">
-                                    <p class="card-header-title">{{ item.display_name }}</p>
+                                    <p class="card-header-title">{{ card.display_name }}</p>
                                 </header>
                                 <div class="card-content">
                                     <div class="content">
-                                        <p>{{ item.description }}</p>
+                                        <p>{{ card.description }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -349,32 +349,32 @@
                     <input class="input" type="text" name="locationFilter" id="locationFilterString">
                     <hr>
                     <div class="columns is-multiline">
-                        <div class="column is-3" v-for="(item, card_index) in playerLocations">
+                        <div class="column is-3" v-for="(location, card_index) in playerState.locations">
                             <div class="card">
                                 <header class="card-header">
-                                    <p class="card-header-title">{{ item.display_name }}</p>
+                                    <p class="card-header-title">{{ location.display_name }}</p>
                                 </header>
                                 <div class="card-content">
                                     <div class="content">
-                                        <p>{{ item.description }}</p>
+                                        <p>{{ location.description }}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <p class="has-text-right">{{ playerLocations.length }} / {{ allLocations.length }}</p>
+                    <p class="has-text-right">{{ playerState.locations.length }} / {{ allLocations.length }}</p>
                 </div>
                 <div class="column is-6">
                     <h2 class="subtitle">Favourites</h2>
                     <div class="columns is-multiline">
-                        <div class="column is-6" v-for="(item, card_index) in favouriteLocations">
+                        <div class="column is-6" v-for="(location, card_index) in playerState.favourites">
                             <div class="card">
                                 <header class="card-header">
-                                    <p class="card-header-title">{{ item.display_name }}</p>
+                                    <p class="card-header-title">{{ location.display_name }}</p>
                                 </header>
                                 <div class="card-content">
                                     <div class="content">
-                                        <p>{{ item.description }}</p>
+                                        <p>{{ location.description }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -401,10 +401,10 @@
                 <div class="column is-9">
                     <h2 class="title is-3">Friend List</h2>
                     <div class="columns is-multiline">
-                        <div class="column is-3" v-for="(item, card_index) in allFriends">
+                        <div class="column is-3" v-for="(friend, card_index) in allFriends">
                             <div class="card">
                                 <header class="card-header">
-                                    <p class="card-header-title">{{ item.friend_name }}</p>
+                                    <p class="card-header-title">{{ friend.friend_name }}</p>
                                 </header>
                                 <div class="card-content">
                                     <div class="content">
@@ -449,15 +449,15 @@
                 <!-- Locations -->
                 <div class="column is-4">
                     <h2 class="subtitle">Locations</h2>
-                    <div v-for="(item, index) in allLocations" class="media">
+                    <div v-for="(location, index) in allLocations" class="media">
                         <div class="media-left">
                             <figure class="image is-48x48">
                                 <img src="https://bulma.io/images/placeholders/48x48.png" alt="img">
                             </figure>
                         </div>
                         <div class="media-content">
-                            <p class="is-bold">{{ item.display_name }}</p>
-                            <p>{{ item.description }}</p>
+                            <p class="is-bold">{{ location.display_name }}</p>
+                            <p>{{ location.description }}</p>
                         </div>
                         <div class="buttons has-addons is-pulled-right">
                             <div class="button is-small">Edit</div>
@@ -498,6 +498,8 @@
 
     <script type="text/javascript" src="js/util.js"></script>
     <script type="text/javascript" src="js/services.js"></script>
+    <script type="text/javascript" src="js/actions.js"></script>
+    <script type="text/javascript" src="js/components.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 </body>
 

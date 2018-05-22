@@ -1,7 +1,7 @@
 {
   "host": "localhost",
   "port": 3000,
-  "public": "../public/",
+  "public": "../dist/",
   "paginate": {
     "default": 10,
     "max": 50
@@ -11,7 +11,7 @@
   "mysqlClient": {},
   "mysql": {
     "client": "mysql2",
-    "connection": "mysql://root:palavrapassengraçada12345@localhost:3306/deckoflife"
+    "connection": "mysql://web:web@localhost:3306/web"
   },
   "postgres": {
     "client": "pg",

@@ -1,77 +1,4 @@
-Vue.component('card-form', {
-    props: ['locations'],
-    data: function() {
-        return {
-            card: {
-                id_location: '',
-                display_name: '',
-                action: '',
-                description: ''
-            }
-        }
-    },
-    methods: {
-        create: function() {
-            cardService.create(this.card).then( response => {
-                console.log('Card created: ', response);
-            }).catch(error => {
-                console.log('Card failed: ', error)
-            });
-        }
-    },
-    template: document.getElementById('card-form')
-});
-
-Vue.component('location-form', {
-    props: ['locations'],
-    data: function() {
-        return {
-            location: {
-                display_name: '',
-                id_parent: '',
-                description: ''
-            }
-        }
-    },
-    methods: {
-        create: function() {
-            locationService.create(this.location).then( response => {
-                console.log('Location created: ', response);
-            }).catch(error => {
-                console.log('Location failed: ', error)
-            });
-        }
-    },
-    template: document.getElementById('location-form')
-});
-
-Vue.component('player-form', {
-    data: function() {
-        return {
-            player: {
-                display_name: '',
-                age: '',
-                description: ''
-            }
-        }
-    },
-    methods: {
-        create: function() {
-            playerService.create(this.player).then( response => {
-                console.log('Player created: ', response);
-            }).catch(error => {
-                console.log('Player failed: ', error)
-            });
-        }
-    },
-    template: document.getElementById('player-form')
-});
-
 var appData = {
-    user: {
-        email: '',
-        pass: '',
-    },
     player: {
         id_player: '1',
         display_name: 'name',
@@ -79,9 +6,9 @@ var appData = {
     },
     playerState: {
         cards: [],
-        deck: [1, 2],
-        locations: [1, 2],
-        favourites: [1],
+        deck: [],
+        locations: [],
+        favourites: [],
         friends: [],
         invites: [],
         group: {
@@ -89,10 +16,8 @@ var appData = {
             host: {},
             invited: [],
             members: [],
-            host: {},
             card: {},
         },
-        groups: [],
         history: []
     },
     errors: [],
@@ -135,22 +60,50 @@ function populateAppData() {
     axios.get("/friends/" + appData.player.id_player).then(response => {
         appData.collections.friendships = response;
     });
+    
+    axios.get("/friends/" + appData.player.id_player).then(response => {
+        appData.collections.friendships = response;
+    });
 
     axios.get('/api/lfg').then(response => {
         appData.playerState.invites = response.data;
+    });
+
+    axios.get("/player/available/" + appData.player.id_player).then(response => {
+        appData.playerState.deck = response.data;
+    });
+
+    axios.get("/player/discovered/" + appData.player.id_player).then(response => {
+        appData.playerState.locations = response.data;
+    });
+
+    axios.get("/player/played/" + appData.player.id_player).then(response => {
+        appData.playerState.history = response.data;
+    });
+
+    axios.get("/player/hand/" + appData.player.id_player).then(response => {
+        appData.playerState.cards = response.data;
+    });
+
+    axios.get("/player/favourites/" + appData.player.id_player).then(response => {
+        appData.playerState.favourites = response.data;
     });
 }
 
 var app = new Vue({
     el: '#app-root',
     data: appData,
-    mounted: function () {
+    created: function () {
         populateAppData();
     },
     methods: {
-        playCard: function (index) {
-            this.playerState.history.push(this.playerState.cards[index]);
-            this.playerState.cards.splice(index, 1);
+        playCard: function (card, card_index) {
+            axios.post('/state/playCard', {
+                id_playercard: card.id_playercard
+            }).then( response => {
+                this.playerState.history.push(response)
+                this.playerState.cards.splice(card_index, 1);
+            }).catch( error => alert_log(error));
         },
         playGroupCard: function () {
             const index = this.playerState.cards.indexOf(this.playerState.group.card);
@@ -238,38 +191,9 @@ var app = new Vue({
         pendingInvites: function () {
             return this.playerState.invites.filter(i => !i.accepted);
         },
-        playerHistory: function () {
-            return this.playerState.history.map(c => this.collections.cards.data.find(x => c == x.id_card));
-        },
-        playerCards: function () {
-            return this.playerState.cards.map(c => this.collections.cards.data.find(x => c == x.id_card));
-        },
-        deckCards: function () {
-            return this.collections.cards.data.filter(c => this.playerState.deck.includes(c.id_card));
-        },
-        historyCards: function () {
-            return this.collections.cards.data.filter(c => this.playerState.history.includes(c.id_card));
-        },
-        playerLocations: function () {
-            return this.collections.locations.data.filter(l => this.playerState.locations.includes(l.id_location));
-        },
-        favouriteLocations: function () {
-            return this.collections.locations.data.filter(l =>
-                this.playerState.locations.includes(l.id_location) &&
-                this.playerState.favourites.includes(l.id_location));
-        },
-        locationCards: function () {
-            return this.collections.cards.data.filter(c => this.playerState.locations.includes(c.id_location));
-        },
         playerEvents: function () {
             return this.collections.events.data.filter(e => this.playerState.locations.includes(e.id_location));
         },
-
-        refresh: function(){
-
-            location.reload();
-        },
-
         allCards: () => appData.collections.cards.data,
         allEvents: () => appData.collections.events.data,
         allLocations: () => appData.collections.locations.data,

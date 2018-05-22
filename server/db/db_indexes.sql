@@ -1,5 +1,3 @@
-
-
 ALTER TABLE `Player` ADD CONSTRAINT pk_player PRIMARY KEY (id_player);
 ALTER TABLE `PlayerUser` ADD CONSTRAINT pk_user PRIMARY KEY (id_user);
 ALTER TABLE `Group` ADD CONSTRAINT pk_group PRIMARY KEY (id_group);

@@ -4,6 +4,9 @@ const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
 const logger = require('winston');
+const session = require('express-session')
+const passport = require('passport')
+const fallback = require('express-history-api-fallback');
 
 const configuration = require('@feathersjs/configuration');
 const feathers = require('@feathersjs/feathers');
@@ -12,7 +15,7 @@ const socketio = require('@feathersjs/socketio');
 const memory = require('feathers-memory');
 
 const knex = require('./knex');
-const authentication = require('./authentication');
+// const authentication = require('./authentication');
 const services = require('./services');
 const channels = require('./channels');
 
@@ -33,9 +36,19 @@ app.use(compression());
 app.configure(express.rest());
 app.configure(socketio());
 
+// Authentication
+app.use(session({
+  secret: app.get('authentication').secret,
+  resave: true,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Enable services
 app.configure(knex);
-app.configure(authentication);
+// app.configure(authentication);
 app.configure(services);
 app.configure(channels);
 
@@ -43,8 +56,13 @@ app.configure(channels);
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 
+// View Routes
+const viewRouter = require('./routes/view');
+app.use('/auth', viewRouter);
+
 // Static resources
 app.use(express.static(app.get('public')));
+app.use(fallback('index.html', { root: app.get('public') }))
 app.use(express.errorHandler());
 
 // Main

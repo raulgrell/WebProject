@@ -19,7 +19,7 @@ module.exports = function (app) {
             all: [],
             find: [ authenticate('jwt') ],
             get: [ authenticate('jwt') ],
-            create: [ hashPassword() ],
+            create: [ hashPassword(), authenticate('jwt') ],
             update: [ hashPassword(),  authenticate('jwt') ],
             patch: [ hashPassword(),  authenticate('jwt') ],
             remove: [ authenticate('jwt') ]
