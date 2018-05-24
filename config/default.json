@@ -2,13 +2,9 @@
   "host": "127.0.0.1",
   "port": 3000,
   "public": "../dist/",
-  "paginate": {
-    "default": 10,
-    "max": 50
-  },
+  "paginate": false,
   "knexDriver": "mysql",
   "nedb": "../data",
-  "mysqlClient": {},
   "mysql": {
     "client": "mysql2",
     "connection": "mysql://web:web@127.0.0.1:3306/web"

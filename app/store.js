@@ -6,8 +6,8 @@ export default {
   },
   playerState: {
     hand: [],
-    played: [],
     deck: [],
+    played: [],
     locations: [],
     visited: [],
     completed: [],
@@ -26,9 +26,6 @@ export default {
   errors: [],
   collections: {
     cards: {
-      data: []
-    },
-    friendships: {
       data: []
     },
     players: {

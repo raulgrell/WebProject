@@ -70,13 +70,6 @@ module.exports = function (app) {
     paginate
   }));
 
-  app.use('/api/player', knexService({
-    Model: playerModel(app),
-    id: 'id_player',
-    name: 'player',
-    paginate
-  }));
-
   app.use('/api/playercard', knexService({
     Model: playerCardModel(app),
     id: 'id_playercard',

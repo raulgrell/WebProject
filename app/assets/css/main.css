@@ -14,10 +14,9 @@ html, body {
 .body-bg-color {
     padding: 1em;
     background-color: #FAFAFA;
-    background-image: url("bg.jpg"); /*not final image*/
+    background-image: url('./bg.jpg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
-
 }
 
 .is-page {

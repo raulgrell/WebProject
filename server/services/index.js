@@ -13,15 +13,15 @@ module.exports = function (app) {
 
   app.hooks({
     before: {
-      all: [ logger() ]
+      all: [logger()]
     },
 
     after: {
-      all: [ logger() ]
+      all: [logger()]
     },
 
     error: {
-      all: [ logger() ]
+      all: [logger()]
     }
   });
 };
