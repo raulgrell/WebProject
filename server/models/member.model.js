@@ -10,8 +10,8 @@ module.exports = function (app) {
         table.integer('id_group');
         table.integer('id_player');
         // Keys
-        // table.foreign('id_group').references('id_group').inTable('Group');
-        // table.foreign('id_player').references('id_player').inTable('Player');
+        table.foreign('id_group').references('id_group').inTable('Group');
+        table.foreign('id_player').references('id_player').inTable('Player');
       }).then(() => {
         console.log(`Created ${tableName} table`);
         return db(tableName).insert().then((r) => console.log(r)).catch(e => console.log(e));

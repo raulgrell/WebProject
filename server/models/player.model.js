@@ -8,6 +8,8 @@ module.exports = function (app) {
       return db.schema.createTable(tableName, table => {
         // Atributes
         table.increments('id_player');
+        table.string('email').unique().notNullable();
+        table.string('password').notNullable();
         table.string('display_name').notNullable();
         table.string('description');
         table.integer('age');

@@ -10,10 +10,11 @@ module.exports = function (app) {
         table.integer('id_player');
         table.integer('id_friend');
         table.string('text');
+        table.string('is_accepted');
         table.timestamps();
         // Indices
-        // table.foreign('id_player').references('id_player').inTable('Player');
-        // table.foreign('id_friend').references('id_player').inTable('Player');
+        table.foreign('id_player').references('id_player').inTable('Player');
+        table.foreign('id_friend').references('id_player').inTable('Player');
       }).then(() => {
         console.log(`Created ${tableName} table`);
         return db(tableName).insert([

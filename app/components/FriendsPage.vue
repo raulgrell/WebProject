@@ -7,7 +7,7 @@
                 <h2 class="title is-3">Player List</h2>
                 <div v-for="item in collections.players.data" :key="item.id_player">
                     <p>{{ item.display_name }}
-                        <a v-if="!isFriend(item.id_player)" @click="addFriend(item.id_player); refresh();" class="is-pulled-right">Add friend </a>
+                        <a v-if="!isFriend(item.id_player)" @click="addFriend(item.id_player)" class="is-pulled-right">Add friend </a>
                     </p>
                 </div>
             </div>
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import store from "../store";
 
 export default {
@@ -44,9 +45,8 @@ export default {
       axios
         .post("/friends/" + this.player.id_player + "/" + id_friend)
         .then(response => {
-          this.collections.friendships = response;
-        });
-
+            this.collections.friendships = response;
+        })
       this.playerState.friends.push(id_friend);
     },
     isFriend: function(id_friend) {

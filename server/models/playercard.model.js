@@ -13,8 +13,8 @@ module.exports = function (app) {
         table.integer('id_group');
         table.boolean('is_played');
         // Indices
-        // table.foreign('id_player').references('id_player').inTable('player');
-        // table.foreign('id_player').references('id_group').inTable('group');
+        table.foreign('id_player').references('id_player').inTable('player');
+        table.foreign('id_player').references('id_group').inTable('group');
       }).then(() => {
         console.log(`Created ${tableName} table`);
         return db(tableName).insert([

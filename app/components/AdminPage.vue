@@ -10,6 +10,7 @@
                     <p class="is-item-title">{{ player.display_name }}</p>
                     <p>{{ player.description }}</p>
                     <div class="buttons has-addons is-admin-buttons">
+                        <div class="button is-small">Login</div>
                         <div class="button is-small">Edit</div>
                         <div class="button is-small">Friend</div>
                     </div>

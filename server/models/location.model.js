@@ -9,7 +9,9 @@ module.exports = function (app) {
         table.increments('id_location');
         table.integer('id_parent');
         table.string('display_name').notNullable();
-        table.string('description').notNullable(); 
+        table.string('description').notNullable();
+        // Indices
+        table.foreign('id_group').references('id_group').inTable('Group');        
       }).then(() => {
         console.log(`Created ${tableName} table`);
         return db(tableName).insert([

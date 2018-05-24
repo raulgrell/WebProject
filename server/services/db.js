@@ -1,5 +1,5 @@
 const knexService = require('feathers-knex');
-const attendedModel = require('../models/attended.model');
+const encounterModel = require('../models/encounter.model');
 const cardModel = require('../models/card.model');
 const discoveredModel = require('../models/discovered.model');
 const eventModel = require('../models/event.model');
@@ -9,16 +9,15 @@ const locationModel = require('../models/location.model');
 const memberModel = require('../models/member.model');
 const playerModel = require('../models/player.model');
 const playerCardModel = require('../models/playercard.model');
-const playerUserModel = require('../models/playeruser.model');
 
 module.exports = function (app) {
-
+  const Model = app.get('knexClient')
   const paginate = app.get('paginate');
 
-  app.use('/api/attended', knexService({
-    Model: attendedModel(app),
-    id: 'id_attended',
-    name: 'attended',
+  app.use('/api/encounter', knexService({
+    Model: encounterModel(app),
+    id: 'id_encounter',
+    name: 'encounter',
     paginate
   }));
 
@@ -83,12 +82,5 @@ module.exports = function (app) {
     id: 'id_playercard',
     name: 'playercard',
     paginate
-  }));
-
-  app.use('/api/playeruser', knexService({
-    Model: playerModel(app),
-    id: 'id_playeruser',
-    name: 'playeruser',
-    paginate,
   }));
 };

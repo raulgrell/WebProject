@@ -13,8 +13,8 @@ module.exports = function (app) {
         table.boolean('is_visited');
         table.timestamps();
         // Indices
-        // table.foreign('id_player').references('id_player').inTable('Player');
-        // table.foreign('id_location').references('id_location').inTable('Location');
+        table.foreign('id_player').references('id_player').inTable('Player');
+        table.foreign('id_location').references('id_location').inTable('Location');
       }).then(() => {
         console.log(`Created ${tableName} table`);
         return db(tableName).insert([

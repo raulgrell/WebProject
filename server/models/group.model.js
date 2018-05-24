@@ -11,7 +11,6 @@ module.exports = function (app) {
       }).then(() => {
         console.log(`Created ${tableName} table`);
         return db(tableName).insert().then((r) => console.log(r)).catch(e => console.log(e));
-
       }).catch(e => console.error(`Error creating ${tableName} table`, e));
     }
   }).catch( e => console.error(`Error querying ${tableName}`, e));

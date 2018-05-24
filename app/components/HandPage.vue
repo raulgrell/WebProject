@@ -2,30 +2,17 @@
     <div class="container is-fluid">
         <div class="columns">
             <!-- Left -->
-            <div class="column is-3">
-                <h1 class="title">Locations</h1>
-                <div v-for="location in playerState.locations" :key="location.id_location" class="media">
-                    <div class="media-left">
-                        <figure class="image is-32x32">
-                            <img src="https://bulma.io/images/placeholders/32x32.png" alt="img">
-                        </figure>
-                    </div>
-                    <div class="media-content">
-                        <p>{{ location.display_name }}</p>
-                    </div>
-                </div>
-                <p class="has-text-right">{{ playerState.locations.length }} / {{ collections.locations.length }}</p>
-            </div>
-
-            <!-- Middle -->
-            <div id="player-hand" class="column is-6">
+            <div id="player-hand" class="column is-8">
                 <h1 class="title is-3">Current Cards</h1>
                 <div class="columns is-multiline">
-                    <div class="column is-6" v-for="(card, card_index) in playerState.cards" :key="card.id_playercard" >
+                    <div class="column is-4" v-for="(card, card_index) in playerState.cards" :key="card.id_playercard" >
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title">{{ card.display_name }}</p>
                             </header>
+                            <div class="card-image image is-square">
+                                <img src="../assets/css/bg.jpg" alt="">
+                            </div>
                             <div class="card-content">
                                 <div class="content">
                                     <p>{{ card.description }}</p>
@@ -44,7 +31,7 @@
             </div>
 
             <!-- Right -->
-            <div class="column is-3">
+            <div class="column is-4">
                 <h1 class="title is-3">Friends</h1>
                 <div v-for="friend in playerState.friends" :key="friend.id_player" class="media">
                     <div class="media-left">
@@ -141,13 +128,12 @@ export default {
       this.playerState.group.card = {};
     },
     dropCard: function(index) {
-      this.playerState.cards.splice(index, 1);
         axios
-          .post("/state/dealCard/", {
+          .post("/state/dropCard/", {
             id_player: this.player.id_player
           })
           .then(response => {
-            this.playerState.cards.push(response);
+            this.playerState.cards.splice(index, 1);
           })
           .catch(alert_log);
     },
@@ -159,7 +145,7 @@ export default {
         })
         .then(response => {
             axios.get('/state/')
-          this.playerState.cards.push(response);
+          this.playerState.cards.push(response.data);
         })
         .catch(alert_log);
     },

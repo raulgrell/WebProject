@@ -2,29 +2,111 @@
 <html class="no-js" lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="manifest" href="./assets/site.webmanifest">
-    <link rel="apple-touch-icon" href="./assets/icon.png">
-    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
-        crossorigin="anonymous"></script>
+  <link rel="manifest" href="./assets/site.webmanifest">
+  <link rel="apple-touch-icon" href="./assets/icon.png">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
+      crossorigin="anonymous"></script>
 
-    <script type="text/javascript" src="./assets/lib/socket.io.js"></script>
-    <script type="text/javascript" src="./assets/lib/feathers.js"></script>
+  <link rel="stylesheet" href="./assets/css/normalize.css">
+  <link rel="stylesheet" href="./assets/css/bulma.css">
+  <link rel="stylesheet" href="./assets/css/main.css">
 
-    <link rel="stylesheet" href="./assets/css/normalize.css">
-    <link rel="stylesheet" href="./assets/css/bulma.css">
-    <link rel="stylesheet" href="./assets/css/main.css">
-
-    <title>Web Project</title>
+  <title>Web Project</title>
 </head>
 
-<body>
-    <div id="app"></div>
-    <script type="text/javascript" src="./main.js"></script>
+<body class="body-bg-color">
+  
+  <div class="login-header">
+    <img src="./assets/logo.png" height="48" width="72.25">
+    <p class="is-size-2 has-text-centered">Discover the world, one card at a time</p>
+    <a href="./game.html">Game</a>
+    <a href="./login.html">Game</a>
+  </div>
+
+  <div class="columns">
+    <div class="column">
+      <h2 class="is-size-3 ">Find new people</h2>
+      <p class="is-size-5 tooltiptext">Meet people with the same interests as you and make new friends!</p>
+      <h2 class="is-size-3">Visit unknown locations with friends</h2>
+      <p class="is-size-5 tooltiptext">Get to know new locations and places alone, or better, with a group of friends!</p>
+      <h2 class="is-size-3">Collect cards to make your deck even bigger</h2>
+      <p class="is-size-5 tooltiptext">Get cards by doing activities and by discovering new places!</p>
+      <h2 class="is-size-3">Share your interests and favourite places</h2>
+      <p class="is-size-5 tooltiptext">Show everyone you loved a certain place or activity</p>
+    </div>
+
+    <div class="column">
+      <form action="/login/register" method="post">
+      <div class="RegForm">
+        <div class="box">
+          <p class="is-size-5 has-text-centered">Join us now!</p>
+          <div class="field">
+            <label class="label">Username</label>
+            <div class="control has-icons-left has-icons-right">
+              <input id="NameReg" name="display_name" class="input" type="text" placeholder="User Name" required>
+              <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control has-icons-left has-icons-right">
+              <input id="EmailReg" name="email" class="input" type="email" placeholder="E-mail" required>
+              <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control has-icons-left has-icons-right">
+              <input id="PassReg" name="password" class="input" type="password" placeholder="password" required>
+              <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Confirm Password</label>
+            <div class="control has-icons-left has-icons-right">
+              <input id="checkPass" name="confirm_password" class="input" type="password" placeholder="Repeat Password" required>
+              <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="control">
+              <label class="checkbox">
+                <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
+              </label>
+            </div>
+          </div>
+
+          <div class="field is-grouped">
+            <div class="control">
+              <button @click="register()" class="button is-link">Submit</button>
+            </div>
+
+            <div class="control">
+              <button class="button">already have an account?</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
 </body>
 
 </html>

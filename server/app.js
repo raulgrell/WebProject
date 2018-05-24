@@ -4,27 +4,31 @@ const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
 const logger = require('winston');
-const session = require('express-session')
-const passport = require('passport')
-const fallback = require('express-history-api-fallback');
+var flash = require('connect-flash');
 
+// Feathers
 const configuration = require('@feathersjs/configuration');
 const feathers = require('@feathersjs/feathers');
 const express = require('@feathersjs/express');
 const socketio = require('@feathersjs/socketio');
 const memory = require('feathers-memory');
 
+// Authentication
+const session = require('express-session')
+const passport = require('passport')
+
+// App
 const knex = require('./knex');
-// const authentication = require('./authentication');
 const services = require('./services');
 const channels = require('./channels');
+// const authentication = require('./authentication');
 
 const app = express(feathers());
+app.configure(configuration());
 
+// Views
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views')
-
-app.configure(configuration());
 
 // Parse JSON, URL-encoded parameters and Cookies
 app.use(express.json());
@@ -32,19 +36,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compression());
 
-// Enable REST and Socket APIs
-app.configure(express.rest());
-app.configure(socketio());
-
-// Authentication
 app.use(session({
   secret: app.get('authentication').secret,
-  resave: true,
+  resave: false,
   saveUninitialized: false
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
+
+// Enable REST and Socket APIs
+app.configure(express.rest());
+app.configure(socketio());
 
 // Enable services
 app.configure(knex);
@@ -52,17 +56,16 @@ app.configure(knex);
 app.configure(services);
 app.configure(channels);
 
-// Dynamic Routes
+// Game Routes
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 
-// View Routes
-const viewRouter = require('./routes/view');
-app.use('/auth', viewRouter);
+// Auth Routes
+const loginRouter = require('./routes/login');
+app.use('/login', loginRouter);
 
 // Static resources
 app.use(express.static(app.get('public')));
-app.use(fallback('index.html', { root: app.get('public') }))
 app.use(express.errorHandler());
 
 // Main

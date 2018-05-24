@@ -12,7 +12,7 @@ module.exports = function (app) {
         table.string('action');
         table.string('description');
         // Indices
-        // table.foreign('id_location').references('id_location').inTable('Location')
+        table.foreign('id_location').references('id_location').inTable('Location')
       }).then(() => {
         console.log(`Created ${tableName} table`);
         return db(tableName).insert([

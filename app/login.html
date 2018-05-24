@@ -7,41 +7,32 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <link rel="manifest" href="site.webmanifest">
-  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="manifest" href="./assets/site.webmanifest">
+  <link rel="apple-touch-icon" href="./assets/icon.png">
   <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
-  crossorigin="anonymous"></script>
+      crossorigin="anonymous"></script>
 
-  <script type="text/javascript" src="lib/axios.min.js"></script>
-  <script type="text/javascript" src="lib/socket.io.js"></script>
-  <script type="text/javascript" src="lib/feathers.js"></script>
-  <script type="text/javascript" src="lib/vue.js"></script>
-
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/bulma.css">
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="./assets/css/normalize.css">
+  <link rel="stylesheet" href="./assets/css/bulma.css">
+  <link rel="stylesheet" href="./assets/css/main.css">
 
   <title>Web Project</title>
 </head>
 
 <body>
-  <div id="app-root">
-    <div>
-      <img src="logo.png" height="48" width="72.25" ></br>
+    <div class="login-header">
+      <img src="./assets/logo.png" height="48" width="72.25" ></br>
       <p class="is-size-2 has-text-centered">Discover the world, one card at a time</p></br></br></br>
     </div>
-
-
-
 
     <div class="RegForm">
       <div class="box">
         <p class="is-size-5 has-text-centered">Login<p>
-
+        <form action="/login" method="POST">    
           <div class="field">
             <label class="label">Username</label>
             <div class="control has-icons-left has-icons-right">
-              <input id="NameLog" class="input" required="required" type="text" placeholder="User Name">
+              <input id="NameLog" class="input" type="text" placeholder="User Name" required>
               <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
               </span>
@@ -52,7 +43,7 @@
           <div class="field">
             <label class="label">Password</label>
             <div class="control has-icons-left has-icons-right">
-              <input id="PassLog" name="Password" class="input" required="required" type="password" placeholder="password">
+              <input id="PassLog" name="Password" class="input" type="password" placeholder="password" required>
               <span class="icon is-small is-left">
                 <i class="fas fa-lock"></i>
               </span>
@@ -64,16 +55,11 @@
             <div class="control">
               <button @click="login()" class="button is-link">Login</button>
             </div>
-
-
           </div>
         </div>
+      </form>
       </div>
     </div>
-  </div>
-  <script type="text/javascript" src="js/util.js"></script>
-  <script type="text/javascript" src="js/services.js"></script>
-  <script type="text/javascript" src="js/main.js"></script>
 </body>
 
 </html>

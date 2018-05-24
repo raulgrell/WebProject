@@ -3,13 +3,14 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 
-const mysql = require('mysql2'); 
-const connection = mysql.createConnection( {
-  host:'localhost', 
+const app = require('../app');
+
+const connection = mysql.createConnection({
+  host:'127.0.0.1', 
   user:'web', 
   password:'web', 
   database:'web'
-}); 
+});
 
 connection.connect(); 
 
@@ -35,9 +36,8 @@ router.get('/friends/:id', function (req, res, next) {
 
 router.post('/friends/:player_id/:friend_id', function (req, res, next) {
   connection.execute(
-    `INSERT INTO friendship (id_player, id_friend) VALUES (?, ?)`, 
+    `INSERT INTO friendship (id_player, id_friend) VALUES (?, ?)`,
     [req.params.player_id, req.params.friend_id], 
-    [req.params.player_id, req.params.friend_id],
     function (error, results, fields) {
       if (error) {
         console.log("Insert error: ", error);
@@ -48,38 +48,6 @@ router.post('/friends/:player_id/:friend_id', function (req, res, next) {
       }
     }
   );
-});
-
-//display players
-router.get('/players/:id', function(req, res, next) {
-  connection.execute(
-    'SELECT * FROM player where id = ?',
-    [req.params.id],
-    function (error, results, fields) {
-      if (error) throw error;
-      console.log("Results: ", results);
-      res.render('index', { title: 'Hello', results: JSON.stringify(results) });
-    }
-  );
-});
-
-const saltRounds = 10;
-router.post('/register',(req,res,next)=>{
-    bcrypt.hash(req.body.pass, saltRounds, function(err, hash) {
-      if (err) throw err;
-      let sql = 'INSERT INTO player(display_name, email, password) VALUES (?,?,?);';
-      let values = [req.body.name, req.body.email, hash]
-      connection.execute(sql,values, (error, results, fields)=>{
-        if(error){
-          console.log("Insert error: ", error);
-          res.send(500);
-
-        }else{
-          console.log("Results: ", results);
-          res.send(200);
-        }
-      });
-  });
 });
 
 // All Discovered Locations by id_player
@@ -115,7 +83,6 @@ router.get('/player/favourites/:id_player', function (req, res, next) {
 }); 
 
 // All Available Locations by id_player
-
 router.get('/player/available/:id', function (req, res, next) {
   const q = `
     WITH discovered_locations AS (
@@ -134,7 +101,6 @@ router.get('/player/available/:id', function (req, res, next) {
     res.send(results); 
   }); 
 }); 
-
 
 // All cards played by user by id_player
 router.get('/player/played/:id', function (req, res, next) {
@@ -196,20 +162,28 @@ router.post('/state/dealCard/', function (req, res, next) {
       NULL AS id_group, 
       'New' AS state from available_cards
     ORDER BY RAND() LIMIT 1;
-  `; 
+   `; 
   connection.execute(q, [req.body.id_player], function (error, results, fields) {
     if (error)throw error; 
-    console.log('Results: ', results); 
-    res.send(results); 
+    const qq =  `
+      SELECT *
+      FROM playercard
+      INNER JOIN card ON card.id_card = playercard.id_card
+      WHERE id_playercard = LAST_INSERT_ID()`;
+    connection.execute(qq, function(error, results, fields) {
+      if (error) throw error;
+      console.log('Results: ', results[0]); 
+      res.send(results[0]); 
+    });
   }); 
 }); 
 
 router.post('/state/dropCard/:id', function (req, res, next) {
   const q = `
-      UPDATE playercard
-        SET state = 'Discarded'
-      WHERE id_playercard = ?; 
-    `; 
+    UPDATE playercard
+      SET state = 'Discarded'
+    WHERE id_playercard = ?; 
+  `; 
   connection.execute(q, [req.params.id], function (error, results, fields) {
     if (error)throw error; 
     console.log('Results: ', results); 
