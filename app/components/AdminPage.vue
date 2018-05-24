@@ -27,7 +27,7 @@
           <p>{{ location.description }}</p>
           <div class="buttons has-addons is-admin-buttons">
             <div class="button is-small">Edit</div>
-            <div class="button is-small">Discover</div>
+            <div class="button is-small" @click="discoverLocation(location)">Discover</div>
             <div class="button is-small">Explore</div>
             <div class="button is-small">Explore All</div>
           </div>
@@ -71,6 +71,16 @@ export default {
   },
   data: function () {
     return store;
+  },
+  methods: {
+    discoverLocation: function (location) {
+      this.$services.discoveredService.create({
+        id_player: 1,
+        id_location: location.id_location,
+        is_favourite: false,
+        is_visited: false
+      });
+    }
   }
 };
 </script>

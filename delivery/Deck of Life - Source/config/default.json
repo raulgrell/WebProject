@@ -1,0 +1,47 @@
+{
+  "host": "127.0.0.1",
+  "port": 3000,
+  "public": "../dist/",
+  "static": "../static/",
+  "paginate": false,
+  "knexDriver": "mysql",
+  "nedb": "../data",
+  "mysql": {
+    "client": "mysql2",
+    "connection": "mysql://web:web@127.0.0.1:3306/web"
+  },
+  "postgres": {
+    "client": "pg",
+    "connection": "postgres://web:web@127.0.0.1:5432/web"
+  },
+  "authentication": {
+    "secret": "472f340d77ea72b876ba88ca2396ad9573da326d9ea4d6c70f798c10f1f58de56daf254be940cfbdaf8d797796abf63d732572294af4ba9298b4dd3e6e471f1daa9d633ba98452db2decf9e8df998c69e4733476bf3e1fa3e630eeb3e1f40eebb8ed76bbfce261c494a873998bbba4391417f510d9652f3e43ea49be92457dacb7ae8f39f5feb69477584d5c5f9642282fe9ff73a81b78465f0d9dc08b71b68e053d26e011b86587543e09a9ded9b544b51727110d184342fb518fc66a03c3187631f0734359f633b48b67152d0961cabad00860fcbb5b082bfabfb5d71d98daac0cee05e8a1e04a53f549d3a8b2dfb50d69b76861050b2c9917dcd7ca2d53f4",
+    "strategies": [
+      "jwt",
+      "local"
+    ],
+    "path": "/authentication",
+    "service": "api/player",
+    "jwt": {
+      "header": {
+        "typ": "access"
+      },
+      "audience": "127.0.0.1",
+      "subject": "anonymous",
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "1d"
+    },
+    "local": {
+      "entity": "player",
+      "usernameField": "email",
+      "passwordField": "password"
+    },
+    "cookie": {
+      "enabled": true,
+      "name": "feathers-jwt",
+      "httpOnly": false,
+      "secure": false
+    }
+  }
+}

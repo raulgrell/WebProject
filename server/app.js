@@ -13,7 +13,7 @@ const socketio = require('@feathersjs/socketio');
 const memory = require('feathers-memory');
 
 // App
-// const authentication = require('./authentication');
+const authentication = require('./authentication');
 const knex = require('./knex');
 const login = require('./login');
 const routes = require('./routes');
@@ -35,8 +35,8 @@ app.configure(socketio());
 
 // Enable services
 app.configure(knex);
-// app.configure(authentication);
 app.configure(login);
+app.configure(authentication);
 app.configure(services);
 app.configure(channels);
 
@@ -45,6 +45,7 @@ app.use('/', routes);
 
 // Static resources
 app.use(express.static(app.get('public')));
+app.use(express.static(app.get('static')));
 
 // Main
 const port = app.get('port');

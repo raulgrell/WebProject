@@ -11,8 +11,9 @@ module.exports = function (app) {
 
   app.on('login', (authResult, { connection }) => {
     if (connection) {
-      const user = connection.user;
-      console.log("user logged in:", user);
+      console.log('connection: ', connection);
+      const player = connection.player;
+      console.log("user logged in:", player);
       app.channel('anonymous').leave(connection);
       app.channel('authenticated').join(connection);
     }

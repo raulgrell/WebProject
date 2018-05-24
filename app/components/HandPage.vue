@@ -11,7 +11,7 @@
                 <p class="card-header-title">{{ card.display_name }}</p>
               </header>
               <div class="card-image image is-square">
-                <img src="../assets/css/bg.jpg" alt="">
+                <img :src=" 'https://picsum.photos/300/300?image=' + card.id_card" alt="">
               </div>
               <div class="card-content">
                 <div class="content">

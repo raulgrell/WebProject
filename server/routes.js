@@ -171,7 +171,8 @@ router.post('/state/dealCard/', function (req, res, next) {
     WITH discovered_locations AS (
         SELECT id_location, id_player
         FROM discovered
-        WHERE id_player = ? AND is_visited = TRUE), available_cards AS (
+        WHERE id_player = ? AND is_visited = TRUE
+      ), available_cards AS (
         SELECT card.id_card, discovered_locations.id_player
         FROM discovered_locations
           LEFT JOIN card ON discovered_locations.id_location = card.id_location)
@@ -183,13 +184,14 @@ router.post('/state/dealCard/', function (req, res, next) {
     ORDER BY RAND() LIMIT 1;
    `;
   db.execute(q, [req.body.id_player], function (error, results, fields) {
+    console.log(results);
     if (error) throw error;
     const qq = `
       SELECT *
       FROM playercard
       INNER JOIN card ON card.id_card = playercard.id_card
-      WHERE id_playercard = LAST_INSERT_ID()`;
-    db.execute(qq, function (error, results, fields) {
+      WHERE id_playercard = ?`;
+    db.execute(qq, [results.insertId], function (error, results, fields) {
       if (error) throw error;
       res.json(results[0]);
     });

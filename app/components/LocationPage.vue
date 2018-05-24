@@ -8,7 +8,7 @@
         <input class="input" type="text" name="locationFilter" id="locationFilterString">
         <hr>
         <div class="columns is-multiline">
-          <div class="column is-3" v-for="location in playerState.locations" :key="location.id_discovered">
+          <div class="column is-6" v-for="location in playerState.locations" :key="location.id_discovered">
             <div class="card">
               <header class="card-header">
                 <p class="card-header-title">{{ location.display_name }}</p>
@@ -37,7 +37,7 @@
                 <p class="card-header-title">{{ location.display_name }}</p>
               </header>
               <div class="card-image image is-square">
-                <img src="../assets/css/bg.jpg" alt="">
+                <img :src=" 'https://picsum.photos/300/300?image=' + (location.id_location + 100)"  alt="">
               </div>
               <div class="card-content">
                 <div class="content">

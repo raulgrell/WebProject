@@ -20,8 +20,8 @@ module.exports = function (app) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  passport.serializeUser(function (user, done) {
-    done(null, user.id_player);
+  passport.serializeUser(function (player, done) {
+    done(null, player.id_player);
   });
 
   passport.deserializeUser(function (id, done) {

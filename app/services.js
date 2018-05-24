@@ -19,7 +19,7 @@ client.configure(feathers.authentication({
 
 client.authenticate({
   strategy: 'local',
-  email: 'asd@gmail.com',
+  email: 'rg@gmail.com',
   password: 'asd'
 }).then(user => {
   console.log("Authenticated: ", user);
@@ -38,9 +38,19 @@ locationService.on('created', (item) => {
   store.collections.locations.data.push(item);
 });
 
+const discoveredService = client.service('/api/discovered');
+discoveredService.on('created', (item) => {
+  store.playerState.discovered.push(item);
+});
+
 const cardService = client.service('/api/card');
 cardService.on('created', (item) => {
   store.collections.cards.data.push(item);
+});
+
+const eventService = client.service('/api/event');
+eventService.on('created', (item) => {
+  store.collections.events.data.push(item);
 });
 
 const lfgService = client.service('/api/lfg');
@@ -51,7 +61,9 @@ lfgService.on('created', (item) => {
 const services = {
   playerService,
   locationService,
+  discoveredService,
   cardService,
+  eventService,
   lfgService
 }
 
