@@ -5,7 +5,7 @@ export default {
     description: 'I like steak'
   },
   playerState: {
-    cards: [],
+    hand: [],
     played: [],
     deck: [],
     locations: [],

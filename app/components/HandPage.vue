@@ -5,7 +5,7 @@
             <div id="player-hand" class="column is-8">
                 <h1 class="title is-3">Current Cards</h1>
                 <div class="columns is-multiline">
-                    <div class="column is-4" v-for="(card, card_index) in playerState.cards" :key="card.id_playercard" >
+                    <div class="column is-4" v-for="(card, card_index) in playerState.hand" :key="card.id_playercard" >
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title">{{ card.display_name }}</p>
@@ -117,14 +117,14 @@ export default {
         })
         .then(response => {
           this.playerState.history.push(card);
-          this.playerState.cards.splice(card_index, 1);
+          this.playerState.hand.splice(card_index, 1);
         })
         .catch(alert_log);
     },
     playGroupCard: function() {
-      const index = this.playerState.cards.indexOf(this.playerState.group.card);
+      const index = this.playerState.hand.indexOf(this.playerState.group.card);
       this.playerState.history.push(this.playerState.group.card);
-      this.playerState.cards.splice(index, 1);
+      this.playerState.hand.splice(index, 1);
       this.playerState.group.card = {};
     },
     dropCard: function(index) {
@@ -133,19 +133,19 @@ export default {
             id_player: this.player.id_player
           })
           .then(response => {
-            this.playerState.cards.splice(index, 1);
+            this.playerState.hand.splice(index, 1);
           })
           .catch(alert_log);
     },
     dealCard: function() {
-      if (this.playerState.cards.length >= 6) return;
+      if (this.playerState.hand.length >= 6) return;
       axios
         .post("/state/dealCard/", {
           id_player: this.player.id_player
         })
         .then(response => {
             axios.get('/state/')
-          this.playerState.cards.push(response.data);
+          this.playerState.hand.push(response.data);
         })
         .catch(alert_log);
     },

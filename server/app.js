@@ -60,6 +60,10 @@ app.configure(channels);
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 
+app.get('/app', function (req, res, next) {
+  res.sendFile(path.join(app.get('public'), 'app.html'));
+});
+
 // Auth Routes
 const loginRouter = require('./routes/login');
 app.use('/login', loginRouter);

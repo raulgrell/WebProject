@@ -41,10 +41,10 @@ router.post('/friends/:player_id/:friend_id', function (req, res, next) {
     function (error, results, fields) {
       if (error) {
         console.log("Insert error: ", error);
-        res.send(500);
+        res.sendStatus(500);
       } else {
         console.log("Results: ", results);
-        res.send(200);
+        res.sendStatus(200);
       }
     }
   );
@@ -54,7 +54,7 @@ router.post('/friends/:player_id/:friend_id', function (req, res, next) {
 router.get('/player/locations/:id', function (req, res, next) {
   const q = `
     SELECT
-      location. * , 
+      location.* 
     FROM discovered
       INNER JOIN location   ON location.id_location = discovered.id_location
     WHERE discovered.id_player = ?; 
@@ -70,7 +70,7 @@ router.get('/player/locations/:id', function (req, res, next) {
 router.get('/player/favourites/:id_player', function (req, res, next) {
   const q = `
     SELECT
-      location. *
+      location.*
     FROM discovered
       INNER JOIN location ON location.id_location = discovered.id_location
     WHERE discovered.id_player = ? AND discovered.is_favourite = TRUE;
@@ -83,14 +83,14 @@ router.get('/player/favourites/:id_player', function (req, res, next) {
 }); 
 
 // All Available Locations by id_player
-router.get('/player/available/:id', function (req, res, next) {
+router.get('/player/deck/:id', function (req, res, next) {
   const q = `
     WITH discovered_locations AS (
       SELECT id_location
       FROM discovered
       WHERE id_player = ?)
     SELECT 
-      location. * 
+      location.* 
     FROM location
     INNER JOIN discovered_locations
       ON location.id_parent = discovered_locations.id_location; 
@@ -103,10 +103,10 @@ router.get('/player/available/:id', function (req, res, next) {
 }); 
 
 // All cards played by user by id_player
-router.get('/player/played/:id', function (req, res, next) {
+router.get('/player/history/:id', function (req, res, next) {
   const q = `
     SELECT
-      card. * , 
+      card.* , 
       player.display_name   AS player_display_name, 
       location.display_name AS location_display_name
     FROM playercard
@@ -128,8 +128,8 @@ router.get('/player/played/:id', function (req, res, next) {
 router.get('/player/hand/:id', function (req, res, next) {
   const q = `
     SELECT
-      playercard. * , 
-      card. * , 
+      playercard.* , 
+      card.* , 
       location.display_name AS location_display_name
     FROM playercard
       INNER JOIN card ON card.id_card = playercard.id_card

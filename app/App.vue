@@ -2,7 +2,9 @@
     <div id="app">
         <PageNav></PageNav>
         <hr>
-        <router-view/>
+        <transition name="fade" mode="out-in">
+          <router-view></router-view>
+        </transition>
     </div>
 </template>
 
@@ -36,20 +38,20 @@ function populatestore() {
     store.playerState.invites = response.data;
   });
 
-  axios.get("/player/available/" + store.player.id_player).then(response => {
+  axios.get("/player/deck/" + store.player.id_player).then(response => {
     store.playerState.deck = response.data;
   });
 
-  axios.get("/player/discovered/" + store.player.id_player).then(response => {
+  axios.get("/player/locations/" + store.player.id_player).then(response => {
     store.playerState.locations = response.data;
   });
 
-  axios.get("/player/played/" + store.player.id_player).then(response => {
+  axios.get("/player/history/" + store.player.id_player).then(response => {
     store.playerState.history = response.data;
   });
 
   axios.get("/player/hand/" + store.player.id_player).then(response => {
-    store.playerState.cards = response.data;
+    store.playerState.hand = response.data;
   });
 
   axios.get("/player/favourites/" + store.player.id_player).then(response => {
@@ -79,4 +81,14 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   padding: 2em;
 }
+
+/* Transitions */
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .2s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
 </style>

@@ -9,33 +9,40 @@ import AdminPage from './components/AdminPage';
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
+  base: '/app',
   routes: [
     {
       path: '/',
-      name: 'Hand',
+      name: 'hand',
       component: HandPage
     },
     {
-      path: '/deck-page',
-      name: 'Deck',
+      path: '/deck',
+      name: 'deck',
       component: DeckPage
     },
     {
-      path: '/location-page',
-      name: 'Locations',
+      path: '/locations',
+      name: 'locations',
       component: LocationsPage
     },
     {
-      path: '/friend-page',
-      name: 'Friends',
+      path: '/friends',
+      name: 'friends',
       component: FriendsPage
     },
     {
-      path: '/admin-page',
-      name: 'Admin',
+      path: '/admin',
+      name: 'admin',
       component: AdminPage
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  next();
+})
+
+export default router;
