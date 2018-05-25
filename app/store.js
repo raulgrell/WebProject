@@ -16,7 +16,7 @@ export default {
     invites: [],
     group: {
       id_lfg: 0,
-      host: {},
+      player: {},
       invited: [],
       members: [],
       card: {},

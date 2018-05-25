@@ -10,9 +10,9 @@
           <p class="is-item-title">{{ player.display_name }}</p>
           <p>{{ player.description }}</p>
           <div class="buttons has-addons is-admin-buttons">
-            <div class="button is-small">Login</div>
-            <div class="button is-small">Edit</div>
-            <div class="button is-small">Friend</div>
+            <div class="button is-small" @click="loginPlayer(player)">Login</div>
+            <div class="button is-small" @click="editPlayer(player)">Edit</div>
+            <div class="button is-small" @click="friendPlayer(player)">Friend</div>
           </div>
         </div>
         <hr>
@@ -26,10 +26,10 @@
           <p class="is-item-title">{{ location.display_name }}</p>
           <p>{{ location.description }}</p>
           <div class="buttons has-addons is-admin-buttons">
-            <div class="button is-small">Edit</div>
+            <div class="button is-small" @click="editLocation(location)">Edit</div>
             <div class="button is-small" @click="discoverLocation(location)">Discover</div>
-            <div class="button is-small">Explore</div>
-            <div class="button is-small">Explore All</div>
+            <div class="button is-small" @click="exploreLocation(location)">Explore</div>
+            <div class="button is-small" @click="exploreWholeLocation(location)">Explore All</div>
           </div>
         </div>
         <hr>
@@ -43,9 +43,9 @@
           <p class="is-item-title">{{ card.display_name }}</p>
           <p>{{ card.description }}</p>
           <div class="buttons has-addons is-admin-buttons">
-            <div class="button is-small">Edit</div>
-            <div class="button is-small">Discover</div>
-            <div class="button is-small">Unlock</div>
+            <div class="button is-small" @click="editCard(card)">Edit</div>
+            <div class="button is-small" @click="discoverCard(card)">Discover</div>
+            <div class="button is-small" @click="unlockCard(card)">Unlock</div>
           </div>
         </div>
         <hr>
@@ -75,7 +75,23 @@ export default {
   methods: {
     discoverLocation: function (location) {
       this.$services.discoveredService.create({
-        id_player: 1,
+        id_player: this.player.id_player,
+        id_location: location.id_location,
+        is_favourite: false,
+        is_visited: false
+      });
+    },
+    exploreLocation: function (location) {
+      this.$services.discoveredService.create({
+        id_player: this.player.id_player,
+        id_location: location.id_location,
+        is_favourite: false,
+        is_visited: false
+      });
+    },
+    exploreWholeLocation: function (location) {
+      this.$services.discoveredService.create({
+        id_player: this.player.id_player,
         id_location: location.id_location,
         is_favourite: false,
         is_visited: false

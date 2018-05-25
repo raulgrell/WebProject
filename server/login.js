@@ -68,6 +68,10 @@ module.exports = function (app) {
     res.sendFile(path.join(app.get('public'), 'app.html'));
   });
 
+  app.get('/player', requireLogin, function (req, res, next) {
+    res.json(req.user);
+  });
+
   app.get('/login', function (req, res, next) {
     res.sendFile(path.join(app.get('public'), 'login.html'));
   });

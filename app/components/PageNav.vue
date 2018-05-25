@@ -6,6 +6,7 @@
             <router-link class="column" :to="{ name: 'locations' }">Location</router-link>
             <router-link class="column" :to="{ name: 'friends' }">Friend</router-link>
             <router-link class="column" :to="{ name: 'admin' }">Admin</router-link>
+            <a class="column" href="/logout">Logout</a>
         </div>
     </div>
 </template>

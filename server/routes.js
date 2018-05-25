@@ -43,7 +43,8 @@ router.post('/friends/:player_id/:friend_id', function (req, res, next) {
 router.get('/player/locations/:id', function (req, res, next) {
   const q = `
     SELECT
-      location.*
+      location.*,
+      discovered.*
     FROM discovered
       INNER JOIN location   ON location.id_location = discovered.id_location
     WHERE discovered.id_player = ?;
@@ -119,7 +120,7 @@ router.get('/player/history/:id', function (req, res, next) {
       INNER JOIN card ON card.id_card = playercard.id_card
       INNER JOIN location ON location.id_location = card.id_location
     WHERE
-      player.id_player = 1 AND
+      player.id_player = ? AND
       playercard.state = 'Played';
   `;
   db.execute(q, [req.params.id], function (error, results, fields) {
@@ -136,7 +137,7 @@ router.get('/player/played/:id', function (req, res, next) {
     FROM playercard
       INNER JOIN card ON card.id_card = playercard.id_card
     WHERE
-      playercard.id_player = 1 AND playercard.state = 'Played';
+      playercard.id_player = ? AND playercard.state = 'Played';
   `;
   db.execute(q, [req.params.id], function (error, results, fields) {
     if (error) throw error;
@@ -155,7 +156,7 @@ router.get('/player/hand/:id', function (req, res, next) {
       INNER JOIN card ON card.id_card = playercard.id_card
       INNER JOIN location ON location.id_location = card.id_location
     WHERE
-      playercard.id_player = 1 AND
+      playercard.id_player = ? AND
       playercard.state = 'New';
   `;
   db.execute(q, [req.params.id], function (error, results, fields) {
@@ -171,7 +172,7 @@ router.post('/state/dealCard/', function (req, res, next) {
     WITH discovered_locations AS (
         SELECT id_location, id_player
         FROM discovered
-        WHERE id_player = ? AND is_visited = TRUE
+        WHERE id_player = ? /* AND is_visited = TRUE */
       ), available_cards AS (
         SELECT card.id_card, discovered_locations.id_player
         FROM discovered_locations
@@ -198,13 +199,13 @@ router.post('/state/dealCard/', function (req, res, next) {
   });
 });
 
-router.post('/state/dropCard/:id', function (req, res, next) {
+router.post('/state/dropCard/', function (req, res, next) {
   const q = `
     UPDATE playercard
       SET state = 'Discarded'
     WHERE id_playercard = ?;
   `;
-  db.execute(q, [req.params.id], function (error, results, fields) {
+  db.execute(q, [req.body.id_playercard], function (error, results, fields) {
     if (error) throw error;
     res.json(results);
   });

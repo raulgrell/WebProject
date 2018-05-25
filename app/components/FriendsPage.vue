@@ -14,13 +14,17 @@
       <div class="column is-9">
         <h2 class="title is-3">Friend List</h2>
         <div class="columns is-multiline">
-          <div class="column is-3" v-for="friend in playerState.friends" :key="friend.id_player">
+          <div class="column is-4" v-for="friend in playerState.friends" :key="friend.id_friend">
             <div class="card">
               <header class="card-header">
                 <p class="card-header-title">{{ friend.friend_name }}</p>
               </header>
+              <div class="card-image image is-square">
+                <img :src=" 'https://picsum.photos/300/300?image=' + (friend.id_player + 50)"  alt="">
+              </div>
               <div class="card-content">
                 <div class="content">
+                  {{ friend.description }}
                 </div>
               </div>
             </div>
@@ -43,9 +47,8 @@ export default {
   methods: {
     addFriend: function (id_friend) {
       axios.post("/friends/" + this.player.id_player + "/" + id_friend).then(response => {
-        this.collections.friendships = response;
+        this.playerState.friends.push(id_friend);
       });
-      this.playerState.friends.push(id_friend);
     },
     isFriend: function (id_friend) {
       return (

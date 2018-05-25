@@ -11,7 +11,7 @@
                 <p class="card-header-title">{{ card.display_name }}</p>
               </header>
               <div class="card-image image is-square">
-                <img :src=" 'https://picsum.photos/300/300?image=' + card.id_card" alt="">
+                <img :src=" 'https://picsum.photos/300/300?image=' + (card.id_card * 5)" alt="">
               </div>
               <div class="card-content">
                 <div class="content">
@@ -41,7 +41,7 @@
           </div>
           <div class="media-content">
             <p>{{ friend.friend_name }}</p>
-            <button @click="requestGroup(friend)" class="is-pulled-right">Add To Group</button>
+            <!-- <button @click="requestGroup(friend)" class="is-pulled-right">Add To Group</button> -->
           </div>
         </div>
         <hr>
@@ -62,30 +62,30 @@
                 </div>
                 <p class="has-text-weight-bold">Group Members</p>
                 <ul>
-                  <li v-for="member in playerState.group.members" :key="member.id_member">
-                    {{ member.display_name }} - {{ member.accepted ? "Ready!" : "Waiting..." }}
+                  <li v-for="member in playerState.group.members" :key="member.id_player">
+                    {{ member.display_name }}
                   </li>
                 </ul>
               </div>
             </div>
             <footer class="card-footer">
-              <div @click="playGroupCard()" class="card-footer-item">Play</div>
-              <div @click="playerState.group.card = {}" class="card-footer-item">Cancel</div>
+              <div @click="playGroupCard(group)" class="card-footer-item">Play</div>
+              <div @click="cancelGroupCard(group)" class="card-footer-item">Cancel</div>
             </footer>
           </div>
         </div>
         <hr>
-        <div v-for="item in playerState.invites" :key="item.id_friendship" class="media">
+        <div v-for="(group, group_index) in playerState.invites" v-if="group.player.id_player != player.id_player" :key="group.id_friendship" class="media">
           <div class="media-left">
             <figure class="image is-48x48">
               <img src="https://bulma.io/images/placeholders/48x48.png" alt="img">
             </figure>
           </div>
           <div class="media-content">
-            <p>{{ item.player.display_name }} has invited you to join him!</p>
+            <p>{{ group.player.display_name }} wants to make a group!</p>
             <p>Would you like to
-              <strong>{{ item.card.display_name }}</strong>?</p>
-            <button @click="acceptGroup(item)" class="is-pulled-right">Accept</button>
+              <strong>{{ group.card.display_name }}</strong>?</p>
+            <button @click="joinGroup(group, group_index)" class="is-pulled-right">Join</button>
           </div>
         </div>
       </div>
@@ -111,27 +111,32 @@ export default {
     isLookingForGroup: function () {
       return this.playerState.group.card.id_card !== undefined;
     },
-    playCard: function (card, card_index) {
+    playCard: function (card, index) {
       axios.post("/state/playCard", {
         id_playercard: card.id_playercard
       }).then(response => {
         this.playerState.history.push(card);
-        this.playerState.hand.splice(card_index, 1);
+        this.playerState.hand.splice(index, 1);
       }).catch(alert_log);
     },
-    playGroupCard: function () {
-      axios.post("/state/playCard", {
-        id_playercard: card.id_playercard
-      }).then(response => {
-        this.playerState.history.push(card);
-        this.playerState.hand.splice(card_index, 1);
-      }).catch(alert_log);
+    playGroupCard: function (card, card_index) {
+
+    },
+    cancelGroupCard: function (card, card_index) {
+
     },
     dropCard: function (index) {
       axios.post("/state/dropCard/", {
         id_player: this.player.id_player
       }).then(response => {
         this.playerState.hand.splice(index, 1);
+      }).catch(alert_log);
+    },
+    holdCard: function (card, index) {
+      axios.post("/state/holdCard/", {
+        id_playercard: card.id_playercard
+      }).then(response => {
+        this.playerState.hand.splice(index, 1, response);
       }).catch(alert_log);
     },
     dealCard: function () {
@@ -143,27 +148,23 @@ export default {
         this.playerState.hand.push(response.data);
       }).catch(alert_log);
     },
-    requestGroup: function (friend) {
-      this.$services.lfgService.create(this.playerState.group).then(response => {
-        console.log("Created LFG: ", response);
-      }).catch(err => {
-        console.log("LFG Failed: ", error);
-      });
-      friend.accepted = false;
-      this.playerState.group.members.push(friend);
-    },
-    acceptGroup: function (invite) {
-      this.$services.lfgService.patch(invite.id, {
-        accepted: true
+    joinGroup: function (group, index) {
+      group.members.push(this.player);
+      this.$services.lfgService.patch(group.id_lfg, {
+        members: group.members
       }).then(response => {
-        const index = this.playerState.invites.indexOf(invite);
-        this.playerState.invites[index].accepted = true;
+        this.playerState.group = group;
       }).catch(alert_log);
     },
     findGroup: function (card) {
-      this.playerState.group.card = card;
-      this.playerState.group.player = this.player;
-      this.playerState.group.members = [];
+      this.$services.lfgService.create({
+        id_lfg: this.player.id_player,
+        card,
+        player: this.player,
+        members: []
+      }).then(response => {
+          this.playerState.group = response;
+      }).catch(alert_log);
     }
   }
 };
@@ -174,7 +175,7 @@ export default {
 .list-leave-active {
   transition: all 0.2s;
 }
-.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+.list-enter, .list-leave-to {
   opacity: 0;
   transform: translateY(30px);
 }

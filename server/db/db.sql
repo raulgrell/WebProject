@@ -4,18 +4,10 @@ create database DeckOfLife;
 CREATE TABLE Player (
     id_player INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     display_name VARCHAR(50),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
     age INTEGER,
     CONSTRAINT pk_player PRIMARY KEY (id_player)
-);
-
--- Users
-CREATE TABLE PlayerUser (
-    id_user INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
-    id_player INTEGER,
-    email VARCHAR(50) NOT NULL UNIQUE,
-    pass VARCHAR(50) NOT NULL,
-    CONSTRAINT pk_user PRIMARY KEY (id_user),
-    CONSTRAINT fk_user_player FOREIGN KEY (id_player) REFERENCES Player(id_player)
 );
 
 -- Groups
@@ -35,7 +27,6 @@ CREATE TABLE GroupMember (
     CONSTRAINT fk_member_group FOREIGN KEY (id_group) REFERENCES PlayerGroup(id_group)
 );
 
-
 -- Friends
 CREATE TABLE Friendship (
     id_friendship INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
@@ -51,7 +42,8 @@ CREATE TABLE Friendship (
 CREATE TABLE Cards (
     id_card INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
     id_location INTEGER,
-    card_name VARCHAR(20) NOT NULL,
+    `action` VARCHAR(20) NOT NULL,
+    display_name VARCHAR(20) NOT NULL,
     CONSTRAINT pk_card PRIMARY KEY (id_card),
     CONSTRAINT fk_card_location FOREIGN KEY (id_location) REFERENCES Location(id_location)
 );

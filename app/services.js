@@ -40,12 +40,17 @@ locationService.on('created', (item) => {
 
 const discoveredService = client.service('/api/discovered');
 discoveredService.on('created', (item) => {
-  store.playerState.discovered.push(item);
+  store.playerState.locations.push(item);
 });
 
 const cardService = client.service('/api/card');
 cardService.on('created', (item) => {
   store.collections.cards.data.push(item);
+});
+
+const playercardService = client.service('/api/playercard');
+playercardService.on('created', (item) => {
+  store.playerState.cards.data.push(item);
 });
 
 const eventService = client.service('/api/event');
@@ -56,6 +61,14 @@ eventService.on('created', (item) => {
 const lfgService = client.service('/api/lfg');
 lfgService.on('created', (item) => {
   store.playerState.invites.push(item);
+});
+
+lfgService.on('patched', (item) => {
+  const group = store.playerState.invites.find(i => i.id_lfg === item.id_lfg);
+  if (group) {
+    Object.assign(group, item);
+  }
+  console.log('invite accepted:', item);
 });
 
 const services = {
@@ -73,10 +86,6 @@ export default {
       beforeCreate: function () {
         Vue.util.defineReactive(this, '$store', store);
       },
-      created: function () {
-      },
-      beforeDestroyed: function () {
-      }
     })
     Vue.prototype.$client = client;
     Vue.prototype.$services = services;

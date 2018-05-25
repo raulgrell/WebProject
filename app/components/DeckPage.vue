@@ -26,21 +26,6 @@
       </div>
 
       <div class="column is-9">
-        <h2 class="subtitle">History</h2>
-        <div class="columns is-multiline">
-          <div class="column is-3" v-for="card in $store.playerState.history" :key="card.id_playercard">
-            <div class="card">
-              <header class="card-header">
-                <p class="card-header-title">{{ card.display_name }}</p>
-              </header>
-              <div class="card-content">
-                <div class="content">
-                  <p>{{ card.description }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <h2 class="subtitle">Played</h2>
         <div class="columns is-multiline">
           <div class="column is-3" v-for="card in $store.playerState.played" :key="card.id_card">
@@ -59,6 +44,21 @@
         <h2 class="subtitle">Discovered</h2>
         <div class="columns is-multiline">
           <div class="column is-3" v-for="card in $store.playerState.deck" :key="card.id_card">
+            <div class="card">
+              <header class="card-header">
+                <p class="card-header-title">{{ card.display_name }}</p>
+              </header>
+              <div class="card-content">
+                <div class="content">
+                  <p>{{ card.description }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h2 class="subtitle">History</h2>
+        <div class="columns is-multiline">
+          <div class="column is-3" v-for="card in $store.playerState.history" :key="card.id_playercard">
             <div class="card">
               <header class="card-header">
                 <p class="card-header-title">{{ card.display_name }}</p>
