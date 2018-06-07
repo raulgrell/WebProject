@@ -16,7 +16,7 @@ router.get('/friends/:id', function (req, res, next) {
       player_two.display_name as friend_name
      FROM friendship
      INNER JOIN player AS player_one ON (friendship.id_player = player_one.id_player)
-     INNER JOIN player AS player_two ON (friendship.id_friend = player_two.id_player)WHERE friendship.id_player = ?`,
+     INNER JOIN player AS player_two ON (friendship.id_friend = player_two.id_player) WHERE friendship.id_player = ?`,
     [req.params.id],
     function (error, results, fields) {
       if (error) throw error;
