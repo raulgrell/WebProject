@@ -58,9 +58,17 @@ eventService.on('created', (item) => {
   store.collections.events.data.push(item);
 });
 
+const encounterService = client.service('/api/encounter');
+encounterService.on('created', (item) => {
+  store.playerState.encounters.data.push(item);
+});
+
 const lfgService = client.service('/api/lfg');
 lfgService.on('created', (item) => {
-  store.playerState.invites.push(item);
+    const invite = store.playerState.invites.find(i => i.id_lfg === item.id_lfg);
+    if (!invite) {
+      store.playerState.invites.push(item);
+    }
 });
 
 lfgService.on('patched', (item) => {

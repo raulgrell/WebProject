@@ -33,7 +33,7 @@
       <!-- Right -->
       <div class="column is-4">
         <h1 class="title is-3">Friends</h1>
-        <div v-for="friend in playerState.friends" :key="friend.id_player" class="media">
+        <div v-for="friend in playerState.friends" :key="friend.id_friend" class="media">
           <div class="media-left">
             <figure class="image is-48x48">
               <img src="https://bulma.io/images/placeholders/48x48.png" alt="img">
@@ -54,15 +54,9 @@
             <div class="card-content">
               <div class="content">
                 <p>{{ playerState.group.card.description }}</p>
-                <div class="field">
-                  <label class="label">Group Name</label>
-                  <div class="control">
-                    <input class="input" type="text" placeholder="Group Name" v-model="playerState.group.name">
-                  </div>
-                </div>
                 <p class="has-text-weight-bold">Group Members</p>
                 <ul>
-                  <li v-for="member in playerState.group.members" :key="member.id_player">
+                  <li v-for="member in playerState.group.members" :key="member.id_member">
                     {{ member.display_name }}
                   </li>
                 </ul>
@@ -94,16 +88,16 @@
 </template>
 
 <script>
-import axios from "axios";
-import store from "../store";
+import axios from 'axios';
+import store from '../store';
 
 function alert_log(error) {
-  console.log("Error: ", ...arguments);
+  console.log('Error: ', ...arguments);
   alert(error.message);
 }
 
 export default {
-  name: "Hand",
+  name: 'Hand',
   data: function () {
     return store;
   },
@@ -112,7 +106,7 @@ export default {
       return this.playerState.group.card.id_card !== undefined;
     },
     playCard: function (card, index) {
-      axios.post("/state/playCard", {
+      axios.post('/player/state/playCard', {
         id_playercard: card.id_playercard
       }).then(response => {
         this.playerState.history.push(card);
@@ -126,14 +120,14 @@ export default {
 
     },
     dropCard: function (index) {
-      axios.post("/state/dropCard/", {
+      axios.post('/player/state/dropCard/', {
         id_player: this.player.id_player
       }).then(response => {
         this.playerState.hand.splice(index, 1);
       }).catch(alert_log);
     },
     holdCard: function (card, index) {
-      axios.post("/state/holdCard/", {
+      axios.post('/player/state/holdCard/', {
         id_playercard: card.id_playercard
       }).then(response => {
         this.playerState.hand.splice(index, 1, response);
@@ -141,10 +135,9 @@ export default {
     },
     dealCard: function () {
       if (this.playerState.hand.length >= 6) return;
-      axios.post("/state/dealCard/", {
+      axios.post('/player/state/dealCard/', {
         id_player: this.player.id_player
       }).then(response => {
-        axios.get('/state/')
         this.playerState.hand.push(response.data);
       }).catch(alert_log);
     },

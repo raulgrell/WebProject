@@ -7,7 +7,6 @@ module.exports = function (app) {
       return db.schema.createTable(tableName, table => {
         // Attributes
         table.increments('id_encounter');
-        table.integer('id_event');
         table.integer('id_playercard');
         table.string('description');
         // Indices

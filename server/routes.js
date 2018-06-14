@@ -4,9 +4,16 @@ const router = express.Router();
 
 const app = require('./app');
 const db = require('./db')
+const requireUser = require('./util').requireUser;
+
+// Player
+router.get('/player', requireUser, function (req, res, next) {
+  res.json(req.user);
+});
+
 
 //Friendships
-router.get('/friends/:id', function (req, res, next) {
+router.get('/player/friends/', requireUser, function (req, res, next) {
   db.execute(`
     SELECT
       friendship.id_friendship,
@@ -17,17 +24,17 @@ router.get('/friends/:id', function (req, res, next) {
      FROM friendship
      INNER JOIN player AS player_one ON (friendship.id_player = player_one.id_player)
      INNER JOIN player AS player_two ON (friendship.id_friend = player_two.id_player) WHERE friendship.id_player = ?`,
-    [req.params.id],
+    [req.user.id_player],
     function (error, results, fields) {
       if (error) throw error;
       res.json(results);
     });
 });
 
-router.post('/friends/:player_id/:friend_id', function (req, res, next) {
+router.post('/player/friends/:friend_id', requireUser, function (req, res, next) {
   db.execute(
     `INSERT INTO friendship (id_player, id_friend) VALUES (?, ?)`,
-    [req.params.player_id, req.params.friend_id],
+    [req.user.id_player, req.params.friend_id],
     function (error, results, fields) {
       if (error) {
         console.log("Insert error: ", error);
@@ -40,7 +47,7 @@ router.post('/friends/:player_id/:friend_id', function (req, res, next) {
 });
 
 // All Discovered Locations by id_player
-router.get('/player/locations/:id', function (req, res, next) {
+router.get('/player/locations/', requireUser, function (req, res, next) {
   const q = `
     SELECT
       location.*,
@@ -49,14 +56,14 @@ router.get('/player/locations/:id', function (req, res, next) {
       INNER JOIN location   ON location.id_location = discovered.id_location
     WHERE discovered.id_player = ?;
   `;
-  db.execute(q, [req.params.id], function (error, results, fields) {
+  db.execute(q, [req.user.id_player], function (error, results, fields) {
     if (error) throw error;
     res.json(results);
   });
 });
 
 // Favourite location by id_player
-router.get('/player/favourites/:id_player', function (req, res, next) {
+router.get('/player/favourites/', requireUser, function (req, res, next) {
   const q = `
     SELECT
       location.*
@@ -64,14 +71,14 @@ router.get('/player/favourites/:id_player', function (req, res, next) {
       INNER JOIN location ON location.id_location = discovered.id_location
     WHERE discovered.id_player = ? AND discovered.is_favourite = TRUE;
   `;
-  db.execute(q, [req.params.id_player], function (error, results, fields) {
+  db.execute(q, [req.user.id_player], function (error, results, fields) {
     if (error) throw error;
     res.json(results);
   });
 });
 
 // All Available Locations by id_player
-router.get('/player/paths/:id', function (req, res, next) {
+router.get('/player/paths', requireUser, function (req, res, next) {
   const q = `
     WITH discovered_locations AS (
       SELECT id_location
@@ -83,14 +90,14 @@ router.get('/player/paths/:id', function (req, res, next) {
     INNER JOIN discovered_locations
       ON location.id_parent = discovered_locations.id_location;
   `;
-  db.execute(q, [req.params.id], function (error, results, fields) {
+  db.execute(q, [req.user.id_player], function (error, results, fields) {
     if (error) throw error;
     res.json(results);
   });
 });
 
 // All Available cards by id_player
-router.get('/player/deck/:id', function (req, res, next) {
+router.get('/player/deck', requireUser, function (req, res, next) {
   const q = `
     WITH discovered_locations AS (
       SELECT id_location
@@ -102,14 +109,14 @@ router.get('/player/deck/:id', function (req, res, next) {
     INNER JOIN discovered_locations
       ON card.id_location = discovered_locations.id_location;
   `;
-  db.execute(q, [req.params.id], function (error, results, fields) {
+  db.execute(q, [req.user.id_player], function (error, results, fields) {
     if (error) throw error;
     res.json(results);
   });
 });
 
 // All cards played by user by id_player
-router.get('/player/history/:id', function (req, res, next) {
+router.get('/player/history', requireUser, function (req, res, next) {
   const q = `
     SELECT
       card.* ,
@@ -123,14 +130,14 @@ router.get('/player/history/:id', function (req, res, next) {
       player.id_player = ? AND
       playercard.state = 'Played';
   `;
-  db.execute(q, [req.params.id], function (error, results, fields) {
+  db.execute(q, [req.user.id_player], function (error, results, fields) {
     if (error) throw error;
     res.json(results);
   });
 });
 
 // All cards played by user by id_player
-router.get('/player/played/:id', function (req, res, next) {
+router.get('/player/played', requireUser, function (req, res, next) {
   const q = `
     SELECT DISTINCT
       card.*
@@ -139,14 +146,14 @@ router.get('/player/played/:id', function (req, res, next) {
     WHERE
       playercard.id_player = ? AND playercard.state = 'Played';
   `;
-  db.execute(q, [req.params.id], function (error, results, fields) {
+  db.execute(q, [req.user.id_player], function (error, results, fields) {
     if (error) throw error;
     res.json(results);
   });
 });
 
 // All cards in hand by id_player
-router.get('/player/hand/:id', function (req, res, next) {
+router.get('/player/hand', requireUser, function (req, res, next) {
   const q = `
     SELECT
       playercard.* ,
@@ -159,14 +166,14 @@ router.get('/player/hand/:id', function (req, res, next) {
       playercard.id_player = ? AND
       playercard.state = 'New';
   `;
-  db.execute(q, [req.params.id], function (error, results, fields) {
+  db.execute(q, [req.user.id_player], function (error, results, fields) {
     if (error) throw error;
     res.json(results);
   });
 });
 
 // Deal a card
-router.post('/state/dealCard/', function (req, res, next) {
+router.post('/player/state/dealCard/', requireUser, function (req, res, next) {
   const q = `
     INSERT INTO playercard (id_card, id_player, id_group, state)
     WITH discovered_locations AS (
@@ -199,7 +206,7 @@ router.post('/state/dealCard/', function (req, res, next) {
   });
 });
 
-router.post('/state/dropCard/', function (req, res, next) {
+router.post('/player/state/dropCard/', requireUser, function (req, res, next) {
   const q = `
     UPDATE playercard
       SET state = 'Discarded'
@@ -211,7 +218,7 @@ router.post('/state/dropCard/', function (req, res, next) {
   });
 });
 
-router.post('/state/playCard', function (req, res, next) {
+router.post('/player/state/playCard', requireUser, function (req, res, next) {
   const q = `
     UPDATE playercard
       SET state = 'Played'

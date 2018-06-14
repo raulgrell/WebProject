@@ -7,6 +7,7 @@ module.exports = function (app) {
       return db.schema.createTable(tableName, table => {
         // Attributes
         table.increments('id_event');
+        table.increments('id_card');
         table.string('display_name');
         table.string('description');
         table.timestamps();
@@ -22,6 +23,6 @@ module.exports = function (app) {
       }).catch(e => console.error(`Error creating ${tableName} table`, e));
     }
   }).catch( e => console.error(`Error querying ${tableName}`, e));
-  
+
   return db;
 };

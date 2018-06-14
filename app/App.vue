@@ -5,6 +5,9 @@
     <transition name="fade" mode="out-in">
       <router-view></router-view>
     </transition>
+    <modal v-if="showModal" @close="showModal = false">
+      <h3 slot="header">custom header</h3>
+    </modal>
   </div>
 </template>
 
@@ -21,13 +24,13 @@ function populatestore() {
     axios.get('/api/event').then(response => this.$set(store.collections, 'events', response));
     axios.get('/api/player').then(response => this.$set(store.collections, 'players', response));
     axios.get('/api/lfg').then(response => this.$set(store.playerState, 'invites', response.data));
-    axios.get("/friends/" + store.player.id_player).then(response => this.$set(store.playerState, 'friends', response.data));
-    axios.get("/player/deck/" + store.player.id_player).then(response => this.$set(store.playerState, 'deck', response.data));
-    axios.get("/player/locations/" + store.player.id_player).then(response => this.$set(store.playerState, 'locations', response.data));
-    axios.get("/player/history/" + store.player.id_player).then(response => this.$set(store.playerState, 'history', response.data));
-    axios.get("/player/played/" + store.player.id_player).then(response => this.$set(store.playerState, 'played', response.data));
-    axios.get("/player/hand/" + store.player.id_player).then(response => this.$set(store.playerState, 'hand', response.data));
-    axios.get("/player/favourites/" + store.player.id_player).then(response => this.$set(store.playerState, 'favourites', response.data));
+    axios.get('/player/friends/').then(response => this.$set(store.playerState, 'friends', response.data));
+    axios.get('/player/deck/').then(response => this.$set(store.playerState, 'deck', response.data));
+    axios.get('/player/locations/').then(response => this.$set(store.playerState, 'locations', response.data));
+    axios.get('/player/history/').then(response => this.$set(store.playerState, 'history', response.data));
+    axios.get('/player/played/').then(response => this.$set(store.playerState, 'played', response.data));
+    axios.get('/player/hand/').then(response => this.$set(store.playerState, 'hand', response.data));
+    axios.get('/player/favourites/').then(response => this.$set(store.playerState, 'favourites', response.data));
   })
 };
 
@@ -35,6 +38,11 @@ import PageNav from './components/PageNav.vue'
 
 export default {
   name: "App",
+  data: function() {
+    return {
+      showModal: false
+    }
+  },
   components: {
     PageNav
   },

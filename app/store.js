@@ -21,7 +21,8 @@ export default {
       members: [],
       card: {},
     },
-    history: []
+    history: [],
+    encounters: []
   },
   errors: [],
   collections: {

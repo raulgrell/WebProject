@@ -1,5 +1,5 @@
 module.exports = function (app) {
-  
+
   const db = app.get('knexClient');
   const tableName = 'PlayerCard';
 
@@ -11,18 +11,20 @@ module.exports = function (app) {
         table.integer('id_card');
         table.integer('id_player');
         table.integer('id_group');
+        table.integer('id_encounter');
         table.boolean('is_played');
         // Indices
         table.foreign('id_player').references('id_player').inTable('player');
-        table.foreign('id_player').references('id_group').inTable('group');
+        table.foreign('id_group').references('id_group').inTable('group');
+        table.foreign('id_encounter').references('id_encounter').inTable('encounter');
       }).then(() => {
         console.log(`Created ${tableName} table`);
         return db(tableName).insert([
-          {id_playercard: 1, id_card: 1, id_player: 2, id_group: null, is_played: false}
+          {id_playercard: 1, id_card: 1, id_player: 2, id_group: null, id_encounter: null, is_played: false}
         ]).then(r => console.log(r)).catch(e => console.log(e));
       }).catch(e => console.error(`Error creating ${tableName} table`, e));
     }
   }).catch( e => console.error(`Error querying ${tableName}`, e));
-  
+
   return db;
 };

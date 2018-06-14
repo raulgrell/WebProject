@@ -7,6 +7,8 @@ import store from './store';
 
 import axios from 'axios';
 
+import Modal from './components/common/Modal.vue';
+
 axios.interceptors.request.use(config => {
   const token = window.localStorage.getItem('feathers-jwt');
   if (token != null) {
@@ -18,6 +20,8 @@ axios.interceptors.request.use(config => {
 }, err => Promise.reject(err));
 
 Vue.use(services, store);
+
+Vue.component('Modal', Modal);
 
 new Vue({
   el: '#app',

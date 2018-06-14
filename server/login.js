@@ -8,6 +8,7 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local').Strategy;
 
 const db = require('./db');
+const requireLogin = require('./util').requireLogin;
 
 module.exports = function (app) {
 
@@ -68,10 +69,6 @@ module.exports = function (app) {
     res.sendFile(path.join(app.get('public'), 'app.html'));
   });
 
-  app.get('/player', requireLogin, function (req, res, next) {
-    res.json(req.user);
-  });
-
   app.get('/login', function (req, res, next) {
     res.sendFile(path.join(app.get('public'), 'login.html'));
   });
@@ -109,9 +106,4 @@ module.exports = function (app) {
   });
 };
 
-function requireLogin(req, res, next) {
-  if (!req.isAuthenticated || !req.isAuthenticated()) {
-    return res.redirect('/login');
-  }
-  next();
-}
+

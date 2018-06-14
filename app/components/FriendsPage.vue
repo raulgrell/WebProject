@@ -7,7 +7,7 @@
         <h2 class="title is-3">Player List</h2>
         <div v-for="item in collections.players.data" :key="item.id_player">
           <p>{{ item.display_name }}
-            <a v-if="!isFriend(item.id_player)" @click="addFriend(item.id_player)" class="is-pulled-right">Add friend </a>
+            <a v-if="!isFriendOrSelf(item.id_player)" @click="addFriend(item.id_player)" class="is-pulled-right">Add friend </a>
           </p>
         </div>
       </div>
@@ -20,7 +20,7 @@
                 <p class="card-header-title">{{ friend.friend_name }}</p>
               </header>
               <div class="card-image image is-square">
-                <img :src=" 'https://picsum.photos/300/300?image=' + (friend.id_player + 50)"  alt="">
+                <img :src=" 'https://picsum.photos/300/300?image=' + (friend.id_friend + 50)"  alt="">
               </div>
               <div class="card-content">
                 <div class="content">
@@ -50,9 +50,10 @@ export default {
         this.playerState.friends.push(id_friend);
       });
     },
-    isFriend: function (id_friend) {
+    isFriendOrSelf: function (id_player) {
       return (
-        this.playerState.friends.find(f => f.id_player == id_friend) !== undefined
+        this.playerState.friends.find(f => f.id_friend == id_player) !== undefined ||
+        this.player.id_player == id_player
       );
     }
   }
