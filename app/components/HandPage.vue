@@ -32,19 +32,6 @@
 
       <!-- Right -->
       <div class="column is-4">
-        <h1 class="title is-3">Friends</h1>
-        <div v-for="friend in playerState.friends" :key="friend.id_friend" class="media">
-          <div class="media-left">
-            <figure class="image is-48x48">
-              <img src="https://bulma.io/images/placeholders/48x48.png" alt="img">
-            </figure>
-          </div>
-          <div class="media-content">
-            <p>{{ friend.friend_name }}</p>
-            <!-- <button @click="requestGroup(friend)" class="is-pulled-right">Add To Group</button> -->
-          </div>
-        </div>
-        <hr>
         <h1 class="title is-3">Group</h1>
         <div v-if="isLookingForGroup()">
           <div class="card">
@@ -69,7 +56,8 @@
           </div>
         </div>
         <hr>
-        <div v-for="(group, group_index) in playerState.invites" v-if="group.player.id_player != player.id_player" :key="group.id_friendship" class="media">
+        <h1 v-if="incomingLfgs.length > 0" class="title is-3">Looking For Group!</h1>
+        <div v-for="(group, group_index) in incomingLfgs" :key="group.id_friendship" class="media">
           <div class="media-left">
             <figure class="image is-48x48">
               <img src="https://bulma.io/images/placeholders/48x48.png" alt="img">
@@ -101,41 +89,49 @@ export default {
   data: function () {
     return store;
   },
+  computed: {
+    incomingLfgs: function() {
+      return this.playerState.lfgs.filter(lfg => lfg.player.id_player !== this.player.id_player)
+    }
+  },
   methods: {
     isLookingForGroup: function () {
       return this.playerState.group.card.id_card !== undefined;
     },
-    playCard: function (card, index) {
+    playCard: function (card, card_index) {
       axios.post('/player/state/playCard', {
         id_playercard: card.id_playercard
       }).then(response => {
         this.playerState.history.push(card);
-        this.playerState.hand.splice(index, 1);
+        this.playerState.hand.splice(card_index, 1);
       }).catch(alert_log);
     },
     playGroupCard: function (card, card_index) {
-
-    },
-    cancelGroupCard: function (card, card_index) {
-
-    },
-    dropCard: function (index) {
-      axios.post('/player/state/dropCard/', {
-        id_player: this.player.id_player
-      }).then(response => {
-        this.playerState.hand.splice(index, 1);
-      }).catch(alert_log);
-    },
-    holdCard: function (card, index) {
-      axios.post('/player/state/holdCard/', {
+      axios.post('/group/playCard', {
         id_playercard: card.id_playercard
       }).then(response => {
-        this.playerState.hand.splice(index, 1, response);
+        this.playerState.history.push(card);
+        this.playerState.hand.splice(card_index, 1);
+      }).catch(alert_log);
+    },
+    cancelGroupCard: function (card, card_index) {
+      axios.post('/group/disband', {
+        id_playercard: card.id_playercard
+      }).then(response => {
+        this.playerState.history.push(card);
+        this.playerState.hand.splice(card_index, 1);
+      }).catch(alert_log);
+    },
+    dropCard: function (card, index) {
+      axios.post('/player/dropCard/', {
+        id_playercard: card.id_playercard
+      }).then(response => {
+        this.playerState.hand.splice(index, 1);
       }).catch(alert_log);
     },
     dealCard: function () {
       if (this.playerState.hand.length >= 6) return;
-      axios.post('/player/state/dealCard/', {
+      axios.post('/player/dealCard/', {
         id_player: this.player.id_player
       }).then(response => {
         this.playerState.hand.push(response.data);
@@ -156,7 +152,7 @@ export default {
         player: this.player,
         members: []
       }).then(response => {
-          this.playerState.group = response;
+        this.playerState.group = response;
       }).catch(alert_log);
     }
   }

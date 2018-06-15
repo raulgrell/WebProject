@@ -1,30 +1,26 @@
 export default {
-  player: {
-    id_player: 1,
-    display_name: 'Raul',
-    description: 'I like steak'
-  },
+  player: {},
   playerState: {
     hand: [],
     deck: [],
     played: [],
+    history: [],
     locations: [],
     visited: [],
     completed: [],
     favourites: [],
     friends: [],
-    invites: [],
+    requests: [],
+    lfgs: [],
+    encounters: [],
     group: {
       id_lfg: 0,
       player: {},
       invited: [],
       members: [],
       card: {},
-    },
-    history: [],
-    encounters: []
+    }
   },
-  errors: [],
   collections: {
     cards: {
       data: []

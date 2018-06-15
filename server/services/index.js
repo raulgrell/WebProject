@@ -12,14 +12,6 @@ module.exports = function (app) {
   app.configure(game);
 
   app.hooks({
-    before: {
-      all: [logger()]
-    },
-
-    after: {
-      all: [logger()]
-    },
-
     error: {
       all: [logger()]
     }

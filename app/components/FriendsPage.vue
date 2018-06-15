@@ -46,7 +46,12 @@ export default {
   },
   methods: {
     addFriend: function (id_friend) {
-      axios.post("/friends/" + this.player.id_player + "/" + id_friend).then(response => {
+      axios.post("/player/addFriend/" + id_friend).then(response => {
+        this.playerState.friends.push(id_friend);
+      });
+    },
+    acceptInvite: function (id_friendship) {
+      axios.post("/player/acceptFriend/" + id_friendship).then(response => {
         this.playerState.friends.push(id_friend);
       });
     },

@@ -72,6 +72,28 @@ export default {
   data: function () {
     return store;
   },
+  feathers: {
+    "/api/player": {
+      created: function (item) {
+        this.collections.players.data.push(item);
+      }
+    },
+    "/api/event": {
+      created: function (item) {
+        this.collections.events.data.push(item);
+      }
+    },
+    "/api/location": {
+      created: function (item) {
+        this.collections.locations.data.push(item);
+      }
+    },
+    "/api/card": {
+      created: function (item) {
+        this.collections.locations.data.push(item);
+      }
+    }
+  },
   methods: {
     discoverLocation: function (location) {
       this.$services.discoveredService.create({

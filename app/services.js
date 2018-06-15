@@ -13,49 +13,27 @@ client.configure(feathers.authentication({
   jwtStrategy: 'jwt',
   entity: 'player',
   service: 'api/player',
-  storageKey: 'feathers-jwt',
+  storageKey: 'jwt',
   storage: window.localStorage
 }));
 
-client.authenticate({
-  strategy: 'local',
-  email: 'rg@gmail.com',
-  password: 'asd'
-}).then(user => {
+client.authenticate().then(user => {
   console.log("Authenticated: ", user);
 }).catch(err => {
   console.log("Authentication error:", err);
 });
 
-// Players
+// Collections
 const playerService = client.service('/api/player');
-playerService.on('created', (item) => {
-  store.collections.players.data.push(item);
-});
-
 const locationService = client.service('/api/location');
-locationService.on('created', (item) => {
-  store.collections.locations.data.push(item);
-});
+const cardService = client.service('/api/card');
+const eventService = client.service('/api/event');
+
+// Player
 
 const discoveredService = client.service('/api/discovered');
 discoveredService.on('created', (item) => {
   store.playerState.locations.push(item);
-});
-
-const cardService = client.service('/api/card');
-cardService.on('created', (item) => {
-  store.collections.cards.data.push(item);
-});
-
-const playercardService = client.service('/api/playercard');
-playercardService.on('created', (item) => {
-  store.playerState.cards.data.push(item);
-});
-
-const eventService = client.service('/api/event');
-eventService.on('created', (item) => {
-  store.collections.events.data.push(item);
 });
 
 const encounterService = client.service('/api/encounter');
@@ -65,14 +43,14 @@ encounterService.on('created', (item) => {
 
 const lfgService = client.service('/api/lfg');
 lfgService.on('created', (item) => {
-    const invite = store.playerState.invites.find(i => i.id_lfg === item.id_lfg);
+    const invite = store.playerState.lfgs.find(i => i.id_lfg === item.id_lfg);
     if (!invite) {
-      store.playerState.invites.push(item);
+      store.playerState.lfgs.push(item);
     }
 });
 
 lfgService.on('patched', (item) => {
-  const group = store.playerState.invites.find(i => i.id_lfg === item.id_lfg);
+  const group = store.playerState.lfgs.find(i => i.id_lfg === item.id_lfg);
   if (group) {
     Object.assign(group, item);
   }
@@ -94,7 +72,27 @@ export default {
       beforeCreate: function () {
         Vue.util.defineReactive(this, '$store', store);
       },
-    })
+      created: function () {
+        if (!this.$options || !this.$options.feathers) return;
+        // Add Listeners
+        Object.keys(this.$options.feathers).forEach(serviceKey => {
+          const service = this.$options.feathers[serviceKey];
+          Object.keys(service).forEach(handlerKey => {
+            client.service(serviceKey).on(handlerKey, service[handlerKey].bind(this));
+          })
+        })
+      },
+      beforeDestroy: function () {
+        if (!this.$options || !this.$options.feathers) return;
+        // Remove Listeners
+        Object.keys(this.$options.feathers).forEach(serviceKey => {
+          const service = this.$options.feathers[serviceKey];
+          Object.keys(service).forEach(handlerKey => {
+            client.service(serviceKey).removeListener(handlerKey, service[handlerKey].bind(this))
+          });
+        });
+      }
+    });
     Vue.prototype.$client = client;
     Vue.prototype.$services = services;
   }

@@ -8,11 +8,14 @@
     <modal v-if="showModal" @close="showModal = false">
       <h3 slot="header">custom header</h3>
     </modal>
+    <hr>
+    <PageMenu></PageMenu>
   </div>
 </template>
 
 <script>
 
+import Vue from 'vue';
 import axios from 'axios';
 import store from './store';
 
@@ -23,7 +26,7 @@ function populatestore() {
     axios.get('/api/location').then(response => this.$set(store.collections, 'locations', response));
     axios.get('/api/event').then(response => this.$set(store.collections, 'events', response));
     axios.get('/api/player').then(response => this.$set(store.collections, 'players', response));
-    axios.get('/api/lfg').then(response => this.$set(store.playerState, 'invites', response.data));
+    axios.get('/api/lfg').then(response => this.$set(store.playerState, 'lfgs', response.data));
     axios.get('/player/friends/').then(response => this.$set(store.playerState, 'friends', response.data));
     axios.get('/player/deck/').then(response => this.$set(store.playerState, 'deck', response.data));
     axios.get('/player/locations/').then(response => this.$set(store.playerState, 'locations', response.data));
@@ -31,10 +34,12 @@ function populatestore() {
     axios.get('/player/played/').then(response => this.$set(store.playerState, 'played', response.data));
     axios.get('/player/hand/').then(response => this.$set(store.playerState, 'hand', response.data));
     axios.get('/player/favourites/').then(response => this.$set(store.playerState, 'favourites', response.data));
+    Vue.$services.groupService.get(this.player.id_player).then(response => this.$set(store.playerState, 'group', response));
   })
 };
 
 import PageNav from './components/PageNav.vue'
+import PageMenu from './components/PageMenu.vue'
 
 export default {
   name: "App",
@@ -44,7 +49,8 @@ export default {
     }
   },
   components: {
-    PageNav
+    PageNav,
+    PageMenu
   },
   created: populatestore
 };

@@ -18,8 +18,8 @@ module.exports = function (app) {
   service.hooks({
     before: {
       all: [],
-      find: [],
-      get: [],
+      find: [authenticate('jwt')],
+      get: [authenticate('jwt')],
       create: [hashPassword(), authenticate('jwt')],
       update: [hashPassword(), authenticate('jwt')],
       patch: [hashPassword(), authenticate('jwt')],

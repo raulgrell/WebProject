@@ -8,7 +8,6 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local').Strategy;
 
 const db = require('./db');
-const requireLogin = require('./util').requireLogin;
 
 module.exports = function (app) {
 
@@ -37,11 +36,11 @@ module.exports = function (app) {
   passport.use('jwt', new JwtStrategy({
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: app.get('authentication').secret,
-    issuer: 'localhost',
-    audience: 'localhost'
-  }, function (jwt_payload, done) {
+    issuer: '127.0.0.1',
+    audience: '127.0.0.1'
+  }, function (payload, done) {
     let q = 'SELECT id_player, display_name, description, age FROM player WHERE id_player = ?';
-    let v = [jwt_payload.id_player];
+    let v = [payload.id_player];
     db.execute(q, v, function (err, results, fields) {
       if (!results) return done(null, false);
       return done(null, results[0]);
@@ -64,18 +63,6 @@ module.exports = function (app) {
       return done(null, false, { message: 'Incorrect login' });
     });
   }));
-
-  app.get('/app', requireLogin, function (req, res, next) {
-    res.sendFile(path.join(app.get('public'), 'app.html'));
-  });
-
-  app.get('/login', function (req, res, next) {
-    res.sendFile(path.join(app.get('public'), 'login.html'));
-  });
-
-  app.get('/register', function (req, res, next) {
-    res.sendFile(path.join(app.get('public'), 'index.html'));
-  });
 
   app.post('/login', passport.authenticate('local', {
     successRedirect: '/app',
@@ -105,5 +92,3 @@ module.exports = function (app) {
     });
   });
 };
-
-

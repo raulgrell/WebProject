@@ -16,7 +16,9 @@ const memory = require('feathers-memory');
 const authentication = require('./authentication');
 const knex = require('./knex');
 const login = require('./login');
-const routes = require('./routes');
+const app_routes = require('./routes/index');
+const player_routes = require('./routes/player');
+const admin_routes = require('./routes/admin');
 const services = require('./services');
 const channels = require('./channels');
 
@@ -41,7 +43,9 @@ app.configure(services);
 app.configure(channels);
 
 // Game Routes
-app.use('/', routes);
+app.use('/', app_routes);
+app.use('/player', player_routes);
+app.use('/admin', admin_routes);
 
 // Static resources
 app.use(express.static(app.get('public')));

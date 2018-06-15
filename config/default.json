@@ -21,7 +21,9 @@
       "local"
     ],
     "path": "/authentication",
-    "service": "api/player",
+    "service": "/api/player",
+    "entity": "player",
+    "session": false,
     "jwt": {
       "header": {
         "typ": "access"
@@ -39,7 +41,7 @@
     },
     "cookie": {
       "enabled": true,
-      "name": "feathers-jwt",
+      "name": "jwt",
       "httpOnly": false,
       "secure": false
     }
