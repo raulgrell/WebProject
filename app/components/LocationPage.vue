@@ -1,10 +1,10 @@
 <template>
   <!-- Locations -->
   <div class="container is-fluid">
-    <h1 class="title is-3">Locations</h1>
+    <h1 class="title is-3 has-text-light shadowed">Locations</h1>
     <div class="columns is-page">
       <div class="column is-6">
-        <h2 class="subtitle">Filter</h2>
+        <h2 class="subtitle has-text-light shadowed">Filter</h2>
         <input class="input" type="text" name="locationFilter" id="locationFilterString">
         <hr>
         <div class="columns is-multiline">
@@ -29,7 +29,7 @@
         <p class="has-text-right">{{ playerState.locations.length }} / {{ collections.locations.length }}</p>
       </div>
       <div class="column is-6">
-        <h2 class="subtitle">Favourites</h2>
+        <h2 class="subtitle has-text-light shadowed">Favourites</h2>
         <div class="columns is-multiline">
           <div class="column is-6" v-for="location in favourites" :key="location.id_discovered">
             <div class="card">

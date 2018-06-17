@@ -889,6 +889,11 @@ a.has-text-black:hover, a.has-text-black:focus {
   color: whitesmoke !important;
 }
 
+.has-text-light.shadowed {
+    text-shadow: 4px 4px 8px #000000;
+}
+
+
 a.has-text-light:hover, a.has-text-light:focus {
   color: #dbdbdb !important;
 }
@@ -1492,7 +1497,16 @@ a.has-text-danger:hover, a.has-text-danger:focus {
 }
 
 .box {
-  background-color: white;
+  background-color: #333333;
+  border-radius: 6px;
+  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+  color: #4a4a4a;
+  display: block;
+  padding: 1.25rem;
+}
+
+.boxopacity {
+  background-color: rgba(51,51,51,0.4);;
   border-radius: 6px;
   box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
   color: #4a4a4a;
@@ -2060,15 +2074,15 @@ a.box:active {
 }
 
 .button.is-link {
-  background-color: #3273dc;
-  border-color: transparent;
-  color: #fff;
+  background-color: #333333;
+  border-color: #128277;
+  color: #128277;
 }
 
 .button.is-link:hover, .button.is-link.is-hovered {
-  background-color: #276cda;
-  border-color: transparent;
-  color: #fff;
+  background-color: #128277;
+  border-color: #128277;
+  color: #333333;
 }
 
 .button.is-link:focus, .button.is-link.is-focused {
@@ -9668,4 +9682,5 @@ label.panel-block:hover {
   background-color: #fafafa;
   padding: 3rem 1.5rem 6rem;
 }
+
 /*# sourceMappingURL=bulma.css.map */

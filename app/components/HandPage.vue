@@ -3,7 +3,7 @@
     <div class="columns">
       <!-- Left -->
       <div id="player-hand" class="column is-8">
-        <h1 class="title is-3">Current Cards</h1>
+        <h1 class="title is-3 has-text-light shadowed">Current Cards</h1>
         <transition-group name="list" tag="div" class="columns is-multiline">
           <div class="list-item column is-4" v-for="(card, card_index) in playerState.hand" :key="card.id_playercard">
             <div class="card">
@@ -19,9 +19,9 @@
                 </div>
               </div>
               <footer class="card-footer">
-                <div @click="playCard(card, card_index)" class="card-footer-item">Play</div>
-                <div @click="dropCard(card, card_index)" class="card-footer-item">Discard</div>
-                <div @click="findGroup(card, card_index)" class="card-footer-item">Find Group</div>
+                <div @click="playCard(card, card_index)" class="card-footer-item has-text-light shadowed">Play</div>
+                <div @click="dropCard(card, card_index)" class="card-footer-item has-text-light shadowed">Discard</div>
+                <div @click="findGroup(card, card_index)" class="card-footer-item has-text-light shadowed">Find Group</div>
               </footer>
             </div>
           </div>
@@ -32,20 +32,20 @@
 
       <!-- Right -->
       <div class="column is-4">
-        <h1 class="title is-3">Friends</h1>
+        <h1 class="title is-3 has-text-light shadowed">Friends</h1>
         <div v-for="friend in playerState.friends" :key="friend.id_player" class="media">
           <div class="media-left">
             <figure class="image is-48x48">
               <img src="https://bulma.io/images/placeholders/48x48.png" alt="img">
             </figure>
           </div>
-          <div class="media-content">
+          <div class="media-content has-text-light shadowed">
             <p>{{ friend.friend_name }}</p>
             <!-- <button @click="requestGroup(friend)" class="is-pulled-right">Add To Group</button> -->
           </div>
         </div>
         <hr>
-        <h1 class="title is-3">Group</h1>
+        <h1 class="title is-3 has-text-light shadowed">Group</h1>
         <div v-if="isLookingForGroup()">
           <div class="card">
             <header class="card-header">
@@ -55,12 +55,12 @@
               <div class="content">
                 <p>{{ playerState.group.card.description }}</p>
                 <div class="field">
-                  <label class="label">Group Name</label>
+                  <label class="label has-text-dark">Group Name</label>
                   <div class="control">
                     <input class="input" type="text" placeholder="Group Name" v-model="playerState.group.name">
                   </div>
                 </div>
-                <p class="has-text-weight-bold">Group Members</p>
+                <p class="has-text-weight-bold has-text-dark shadowed">Group Members</p>
                 <ul>
                   <li v-for="member in playerState.group.members" :key="member.id_player">
                     {{ member.display_name }}

@@ -1,11 +1,11 @@
 <template>
   <!-- Admin -->
   <div class="container is-fluid">
-    <h1 class="title is-3">Admin</h1>
+    <h1 class="title is-3 has-text-light shadowed">Admin</h1>
     <div class="columns is-page">
       <!-- Players -->
       <div class="column is-4">
-        <h2 class="subtitle">Player</h2>
+        <h2 class="subtitle has-text-light shadowed">Player</h2>
         <div v-for="player in collections.players.data" :key="player.id_player" class="is-item has-admin-buttons">
           <p class="is-item-title">{{ player.display_name }}</p>
           <p>{{ player.description }}</p>
@@ -21,7 +21,7 @@
 
       <!-- Locations -->
       <div class="column is-4">
-        <h2 class="subtitle">Locations</h2>
+        <h2 class="subtitle has-text-light shadowed">Locations</h2>
         <div v-for="location in collections.locations.data" :key="location.id_location" class="is-item has-admin-buttons">
           <p class="is-item-title">{{ location.display_name }}</p>
           <p>{{ location.description }}</p>
@@ -38,7 +38,7 @@
 
       <!-- Cards -->
       <div class="column is-4">
-        <h2 class="subtitle">Cards</h2>
+        <h2 class="subtitle has-text-light shadowed">Cards</h2>
         <div v-for="card in collections.cards.data" :key="card.id_card" class="is-item has-admin-buttons">
           <p class="is-item-title">{{ card.display_name }}</p>
           <p>{{ card.description }}</p>

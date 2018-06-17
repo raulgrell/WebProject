@@ -1,10 +1,10 @@
 <template>
   <!-- Friends -->
   <div class="container is-fluid">
-    <h1 class="title is-3">Friends</h1>
+    <h1 class="title is-3 has-text-light shadowed">Friends</h1>
     <div class="columns is-page">
       <div class="column is-3">
-        <h2 class="title is-3">Player List</h2>
+        <h2 class="title is-3 has-text-light shadowed">Player List</h2>
         <div v-for="item in collections.players.data" :key="item.id_player">
           <p>{{ item.display_name }}
             <a v-if="!isFriend(item.id_player)" @click="addFriend(item.id_player)" class="is-pulled-right">Add friend </a>
@@ -12,12 +12,12 @@
         </div>
       </div>
       <div class="column is-9">
-        <h2 class="title is-3">Friend List</h2>
+        <h2 class="title is-3 has-text-light shadowed">Friend List</h2>
         <div class="columns is-multiline">
           <div class="column is-4" v-for="friend in playerState.friends" :key="friend.id_friend">
             <div class="card">
               <header class="card-header">
-                <p class="card-header-title">{{ friend.friend_name }}</p>
+                <p class="card-header-title has-text-light shadowed">{{ friend.friend_name }}</p>
               </header>
               <div class="card-image image is-square">
                 <img :src=" 'https://picsum.photos/300/300?image=' + (friend.id_player + 50)"  alt="">
