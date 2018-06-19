@@ -6,7 +6,6 @@ import store from './store';
 import services from './services';
 
 import App from './App';
-import Modal from './components/common/Modal.vue';
 
 axios.interceptors.request.use(config => {
   const token = window.localStorage.getItem('feathers-jwt');
@@ -19,8 +18,6 @@ axios.interceptors.request.use(config => {
 }, err => Promise.reject(err));
 
 Vue.use(services, store);
-
-Vue.component('Modal', Modal);
 
 new Vue({
   el: '#app',

@@ -3,21 +3,15 @@
     <div class="field">
       <label class="label">Name</label>
       <div class="control">
-        <input class="input" type="text" placeholder="display_name" v-model="card.display_name">
+        <input class="input" type="text" placeholder="display_name" v-model="event.display_name">
       </div>
     </div>
     <div class="field">
-      <label class="label">Action</label>
-      <div class="control">
-        <input class="input" type="text" placeholder="action" v-model="card.action">
-      </div>
-    </div>
-    <div class="field">
-      <label class="label">Location</label>
+      <label class="label">Card</label>
       <div class="control">
         <div class="select">
-          <select v-model="card.id_location">
-            <option v-for="l in locations" :value="l.id_location" :key="l.id_location">{{ l.display_name }}</option>
+          <select v-model="event.id_card">
+            <option v-for="c in cards" :value="c.id_card" :key="c.id_card">{{ c.display_name }}</option>
           </select>
         </div>
       </div>
@@ -46,7 +40,7 @@ export default {
   props: ['locations'],
   data: function () {
     return {
-      card: {
+      event: {
         id_location: '',
         display_name: '',
         action: '',

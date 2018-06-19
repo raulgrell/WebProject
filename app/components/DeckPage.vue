@@ -1,7 +1,7 @@
 <template>
   <div class="container is-fluid">
     <h1 class="title is-3">Deck</h1>
-    <div class="columns is-page">
+    <div class="columns">
       <div class="column is-3">
         <aside class="menu">
           <p class="menu-label"> Filter by location </p>
@@ -13,10 +13,7 @@
           <p class="menu-label"> Filter by status </p>
           <ul class="menu-list">
             <li>
-              <a>Played ({{ $store.playerState.history.length }}/{{ $store.collections.cards.data.length }})</a>
-            </li>
-            <li>
-              <a>Collected ({{ $store.playerState.played.length }}/{{ $store.collections.cards.data.length }})</a>
+              <a>Collected ({{ $store.playerState.played.length }}/{{ $store.playerState.deck.length }})</a>
             </li>
             <li>
               <a>Discovered ({{ $store.playerState.deck.length }}/{{ $store.collections.cards.data.length }})</a>
@@ -29,46 +26,23 @@
         <h2 class="subtitle">Played</h2>
         <div class="columns is-multiline">
           <div class="column is-3" v-for="card in $store.playerState.played" :key="card.id_card">
-            <div class="card">
-              <header class="card-header">
-                <p class="card-header-title">{{ card.display_name }}</p>
-              </header>
-              <div class="card-content">
-                <div class="content">
-                  <p>{{ card.description }}</p>
-                </div>
-              </div>
-            </div>
+            <player-card :card="card">
+              <p>{{ card.description }}</p>
+            </player-card>
           </div>
         </div>
         <h2 class="subtitle">Discovered</h2>
         <div class="columns is-multiline">
           <div class="column is-3" v-for="card in $store.playerState.deck" :key="card.id_card">
-            <div class="card">
-              <header class="card-header">
-                <p class="card-header-title">{{ card.display_name }}</p>
-              </header>
-              <div class="card-content">
-                <div class="content">
-                  <p>{{ card.description }}</p>
-                </div>
-              </div>
-            </div>
+            <player-card :card="card">
+              <p>{{ card.description }}</p>
+            </player-card>
           </div>
         </div>
         <h2 class="subtitle">History</h2>
         <div class="columns is-multiline">
           <div class="column is-3" v-for="card in $store.playerState.history" :key="card.id_playercard">
-            <div class="card">
-              <header class="card-header">
-                <p class="card-header-title">{{ card.display_name }}</p>
-              </header>
-              <div class="card-content">
-                <div class="content">
-                  <p>{{ card.description }}</p>
-                </div>
-              </div>
-            </div>
+            <player-card :card="card"></player-card>
           </div>
         </div>
       </div>
@@ -79,9 +53,13 @@
 <script>
 
 import store from '../store';
+import PlayerCard from './ui/PlayerCard.vue';
 
 export default {
-  name: 'Deck',
+  name: 'DeckPage',
+  components: {
+    PlayerCard
+  }
 }
 
 </script>

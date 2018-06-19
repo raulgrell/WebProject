@@ -1,8 +1,9 @@
-const path = require('path');
 const session = require('express-session')
+const mysql_session = require('express-mysql-session')
 const passport = require('passport')
 const bcrypt = require('bcrypt');
 
+const jwt = require('jsonwebtoken');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local').Strategy;
@@ -11,9 +12,17 @@ const db = require('./db');
 
 module.exports = function (app) {
 
+  const MySQLStore = mysql_session(session);
+  const sessionStore = new MySQLStore({
+    createDatabaseTable: true,
+    endConnectionOnClose: false
+  }, db);
+
   app.use(session({
+    name: "session",
     secret: app.get('authentication').secret,
-    resave: false,
+    store: sessionStore,
+    resave: true,
     saveUninitialized: false
   }));
 
@@ -25,49 +34,26 @@ module.exports = function (app) {
   });
 
   passport.deserializeUser(function (id, done) {
-    let q = 'SELECT id_player, display_name, description, age FROM player WHERE id_player = ?';
+    let q = 'SELECT * FROM player WHERE id_player = ?';
     let v = [id];
     db.execute(q, v, function (err, results, fields) {
       if (!results) return done(null, false);
+      delete results[0].password;
       return done(null, results[0]);
     });
   });
 
-  passport.use('jwt', new JwtStrategy({
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: app.get('authentication').secret,
-    issuer: '127.0.0.1',
-    audience: '127.0.0.1'
-  }, function (payload, done) {
-    let q = 'SELECT id_player, display_name, description, age FROM player WHERE id_player = ?';
-    let v = [payload.id_player];
-    db.execute(q, v, function (err, results, fields) {
-      if (!results) return done(null, false);
-      return done(null, results[0]);
-    });
-  }));
-
-  passport.use('local', new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password'
-  }, function (email, password, done) {
-    let q = 'SELECT * FROM player WHERE email LIKE ?';
-    let v = [email];
-    db.execute(q, v, function (err, results, fields) {
-      if (err) return done(err);
-      if (results.length == 0) return done(null, false, { message: 'Incorrect login' });
-      if (bcrypt.compareSync(password, results[0].password || '')) {
-        delete results[0].password;
-        return done(null, results[0]);
-      }
-      return done(null, false, { message: 'Incorrect login' });
-    });
-  }));
-
   app.post('/login', passport.authenticate('local', {
-    successRedirect: '/app',
     failureRedirect: '/login',
-  }));
+  }), function (req, res, next) {
+    console.log("logging in: ", req.user);
+    const payload = {
+      id_player: req.user.id_player
+    };
+    const token = jwt.sign(payload, app.get('authentication').secret, app.get('authentication').jwt);
+    res.cookie('accessToken', token, { maxAge: 24 * 60 * 60, httpOnly: false });
+    res.redirect('/app');
+  });
 
   app.get('/logout', function (req, res) {
     req.logout();
@@ -91,4 +77,37 @@ module.exports = function (app) {
       });
     });
   });
+
+  passport.use('jwt', new JwtStrategy({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: app.get('authentication').secret,
+    issuer: 'passport',
+    audience: '127.0.0.1'
+  }, function (payload, done) {
+    let q = 'SELECT * FROM player WHERE id_player = ?';
+    let v = [payload.id_player];
+    db.execute(q, v, function (err, results, fields) {
+      if (!results) return done(null, false);
+      delete results[0].password;
+      return done(null, results[0]);
+    });
+  }));
+
+  passport.use('local', new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+  }, function (email, password, done) {
+    let q = 'SELECT * FROM player WHERE email LIKE ?';
+    let v = [email];
+    db.execute(q, v, function (err, results, fields) {
+      if (err) return done(err);
+      if (!results) return done(null, false, { message: 'Incorrect login' });
+      if (bcrypt.compareSync(password, results[0].password || '')) {
+        delete results[0].password;
+        return done(null, results[0]);
+      }
+      return done(null, false, { message: 'Incorrect login' });
+    });
+  }));
+
 };

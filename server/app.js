@@ -28,7 +28,6 @@ app.configure(configuration());
 // Parse JSON, URL-encoded parameters and Cookies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(compression());
 
 // Enable REST and Socket APIs

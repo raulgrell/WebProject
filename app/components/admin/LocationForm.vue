@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     create: function () {
-      this.$client.service('/api/location').create(this.location).then(response => {
+      this.$services.locationService.create(this.location).then(response => {
         console.log('Location created: ', response);
       }).catch(error => {
         console.log('Location failed: ', error)

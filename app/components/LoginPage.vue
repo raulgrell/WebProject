@@ -119,6 +119,7 @@
 
 <script>
 export default {
+  name: 'LoginPage',
   methods: {
     register: function () {
       var player = {

@@ -1,5 +1,9 @@
 import io from "socket.io-client";
+import axios from "axios";
 import feathers from "@feathersjs/client";
+
+import { CookieStorage } from 'cookie-storage';
+const cookieStorage = new CookieStorage();
 
 import store from "./store";
 
@@ -12,9 +16,9 @@ client.configure(feathers.authentication({
   path: '/authentication',
   jwtStrategy: 'jwt',
   entity: 'player',
-  service: 'api/player',
-  storageKey: 'jwt',
-  storage: window.localStorage
+  service: '/api/player',
+  storageKey: 'accessToken',
+  storage: cookieStorage
 }));
 
 client.authenticate().then(user => {
@@ -28,6 +32,7 @@ const playerService = client.service('/api/player');
 const locationService = client.service('/api/location');
 const cardService = client.service('/api/card');
 const eventService = client.service('/api/event');
+const groupService = client.service('/api/group');
 
 // Player
 
@@ -42,26 +47,13 @@ encounterService.on('created', (item) => {
 });
 
 const lfgService = client.service('/api/lfg');
-lfgService.on('created', (item) => {
-    const invite = store.playerState.lfgs.find(i => i.id_lfg === item.id_lfg);
-    if (!invite) {
-      store.playerState.lfgs.push(item);
-    }
-});
-
-lfgService.on('patched', (item) => {
-  const group = store.playerState.lfgs.find(i => i.id_lfg === item.id_lfg);
-  if (group) {
-    Object.assign(group, item);
-  }
-  console.log('invite accepted:', item);
-});
 
 const services = {
   playerService,
   locationService,
   discoveredService,
   cardService,
+  groupService,
   eventService,
   lfgService
 }
@@ -93,7 +85,12 @@ export default {
         });
       }
     });
+    Vue.prototype.$axios = axios;
     Vue.prototype.$client = client;
     Vue.prototype.$services = services;
+    Vue.prototype.$alertLog = function (error) {
+      console.log('Error: ', ...arguments);
+      alert(error.message);
+    }
   }
 }

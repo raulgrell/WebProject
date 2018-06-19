@@ -25,13 +25,11 @@ html, body {
 }
 
 .is-bold {
-    font-weight: bold;
+  font-weight: bold;
 }
 
-#player-hand {
-    display: flex;
-    justify-content: flex-end;
-    flex-direction: column;
+.is-round {
+  border-radius: 50%;
 }
 
 .card {

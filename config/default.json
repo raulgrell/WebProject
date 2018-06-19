@@ -23,14 +23,14 @@
     "path": "/authentication",
     "service": "/api/player",
     "entity": "player",
-    "session": false,
+    "session": true,
     "jwt": {
       "header": {
         "typ": "access"
       },
       "audience": "127.0.0.1",
       "subject": "anonymous",
-      "issuer": "feathers",
+      "issuer": "passport",
       "algorithm": "HS256",
       "expiresIn": "1d"
     },
@@ -40,8 +40,9 @@
       "passwordField": "password"
     },
     "cookie": {
+      "domain": "127.0.0.1",
       "enabled": true,
-      "name": "jwt",
+      "name": "accessToken",
       "httpOnly": false,
       "secure": false
     }

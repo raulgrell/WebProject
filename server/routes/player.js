@@ -1,4 +1,3 @@
-const passport = require('passport');
 const router = require('express').Router();
 const db = require('../db')
 
@@ -10,7 +9,8 @@ function requireUser(req, res, next) {
 }
 
 // Player
-router.get('/', passport.authenticate('jwt', {session: false}), function (req, res, next) {
+router.get('/', requireUser, function (req, res, next) {
+  delete req.user.password;
   res.json(req.user);
 });
 
@@ -25,7 +25,7 @@ router.get('/friends/', requireUser, function (req, res, next) {
       player_two.display_name as friend_name
      FROM friendship
      INNER JOIN player AS player_one ON (friendship.id_player = player_one.id_player)
-     INNER JOIN player AS player_two ON (friendship.id_friend = player_two.id_player) WHERE friendship.id_player = ?`,
+     INNER JOIN player AS player_two ON (friendship.id_friend = player_two.id_player) WHERE friendship.id_player = ?;`,
     [req.user.id_player],
     function (error, results, fields) {
       if (error) throw error;
@@ -35,8 +35,8 @@ router.get('/friends/', requireUser, function (req, res, next) {
 
 router.post('/addFriend/:id_friend', requireUser, function (req, res, next) {
   db.execute(`
-    INSERT INTO friendship (id_player, id_friend) VALUES ?`,
-    [[req.user.id_player, req.params.id_friend]],
+    INSERT INTO friendship (id_player, id_friend) VALUES (?, ?);`,
+    [req.user.id_player, req.params.id_friend],
     function (error, results, fields) {
       if (error) {
         console.log("Insert error: ", error);
@@ -50,7 +50,11 @@ router.post('/addFriend/:id_friend', requireUser, function (req, res, next) {
 
 router.post('/acceptFriend/:id_friendship', requireUser, function (req, res, next) {
   db.execute(`
-    INSERT IGNORE INTO friendship (id_player, id_friend) VALUES (SELECT id_friend, id_player FROM friendship WHERE id_friend = ? AND id_friendship = ?`,
+    INSERT IGNORE INTO friendship (id_player, id_friend)
+    VALUES (
+      SELECT id_friend, id_player FROM friendship
+      WHERE id_friend = ? AND id_friendship = ?
+    );`,
     [req.user.id_user, req.params.id_friendship],
     function (error, results, fields) {
       if (error) {
@@ -71,7 +75,7 @@ router.get('/locations/', requireUser, function (req, res, next) {
       location.*,
       discovered.*
     FROM discovered
-      INNER JOIN location   ON location.id_location = discovered.id_location
+      INNER JOIN location ON location.id_location = discovered.id_location
     WHERE discovered.id_player = ?;
   `;
   db.execute(q, [req.user.id_player], function (error, results, fields) {
@@ -247,5 +251,14 @@ router.post('/playCard', requireUser, function (req, res, next) {
     res.json(results);
   });
 });
+
+router.post('/playGroupCard/', requireUser, function (req, res, next) {
+  res.sendStatus(200);
+});
+
+router.post('/disbandGroup/', requireUser, function (req, res, next) {
+  res.sendStatus(200);
+});
+
 
 module.exports = router;

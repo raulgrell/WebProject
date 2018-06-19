@@ -1,62 +1,10 @@
 <template>
   <div class="container is-fluid">
     <div class="columns">
-      <!-- Left -->
-      <div id="player-hand" class="column is-8">
-        <h1 class="title is-3">Current Cards</h1>
-        <transition-group name="list" tag="div" class="columns is-multiline">
-          <div class="list-item column is-4" v-for="(card, card_index) in playerState.hand" :key="card.id_playercard">
-            <div class="card">
-              <header class="card-header">
-                <p class="card-header-title">{{ card.display_name }}</p>
-              </header>
-              <div class="card-image image is-square">
-                <img :src=" 'https://picsum.photos/300/300?image=' + (card.id_card * 5)" alt="">
-              </div>
-              <div class="card-content">
-                <div class="content">
-                  <p>{{ card.description }}</p>
-                </div>
-              </div>
-              <footer class="card-footer">
-                <div @click="playCard(card, card_index)" class="card-footer-item">Play</div>
-                <div @click="dropCard(card, card_index)" class="card-footer-item">Discard</div>
-                <div @click="findGroup(card, card_index)" class="card-footer-item">Find Group</div>
-              </footer>
-            </div>
-          </div>
-        </transition-group>
-        <hr>
-        <button class="button" @click="dealCard()">Get Card</button>
-      </div>
-
       <!-- Right -->
-      <div class="column is-4">
-        <h1 class="title is-3">Group</h1>
-        <div v-if="isLookingForGroup()">
-          <div class="card">
-            <header class="card-header">
-              <p class="card-header-title">{{ playerState.group.card.display_name }}</p>
-            </header>
-            <div class="card-content">
-              <div class="content">
-                <p>{{ playerState.group.card.description }}</p>
-                <p class="has-text-weight-bold">Group Members</p>
-                <ul>
-                  <li v-for="member in playerState.group.members" :key="member.id_member">
-                    {{ member.display_name }}
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <footer class="card-footer">
-              <div @click="playGroupCard(group)" class="card-footer-item">Play</div>
-              <div @click="cancelGroupCard(group)" class="card-footer-item">Cancel</div>
-            </footer>
-          </div>
-        </div>
-        <hr>
-        <h1 v-if="incomingLfgs.length > 0" class="title is-3">Looking For Group!</h1>
+      <div class="column is-6">
+        <player-hud :experience="$store.playerState.history.length * 12" :locations="$store.playerState.locations.length" :cards="$store.playerState.deck.length"></player-hud>
+        <h1 v-if="incomingLfgs.length > 0" class="title is-5">Looking For Group!</h1>
         <div v-for="(group, group_index) in incomingLfgs" :key="group.id_friendship" class="media">
           <div class="media-left">
             <figure class="image is-48x48">
@@ -71,7 +19,32 @@
           </div>
         </div>
       </div>
+      <div class="column is-6 is-4-fullhd is-offset-2-fullhd">
+        <div v-if="playerState.group.id_lfg">
+          <div class="columns">
+            <div class="column">
+              <h3 class="title is-4">Group Card</h3>
+              <h4 v-if="playerState.group.members.length > 0" class="title is-6">Members:</h4>
+              <p v-for="member in playerState.group.members" :key="member.id_player">{{ member.display_name }}</p>
+              <br>
+              <div class="card-actions">
+                <a @click="playGroupCard(playerState.group.card)" class="card-action">Play</a>
+                <a v-if="this.playerState.group.player.id_player == this.player.id_player" @click="dropCard(playerState.group.card)" class="card-action">Discard</a>
+              </div>
+            </div>
+            <div class="column">
+              <player-card :card="playerState.group.card">
+                <p>{{ playerState.group.card.description }}</p>
+              </player-card>
+            </div>
+          </div>
+        </div>
+        <div v-else class="box">
+          Choose a card from your hand and call some friends!
+        </div>
+      </div>
     </div>
+    <player-hand id="player-hand"></player-hand>
   </div>
 </template>
 
@@ -79,93 +52,64 @@
 import axios from 'axios';
 import store from '../store';
 
-function alert_log(error) {
-  console.log('Error: ', ...arguments);
-  alert(error.message);
-}
+import PlayerHud from './ui/PlayerHud.vue';
+import PlayerHand from './ui/PlayerHand.vue';
+import PlayerCard from './ui/PlayerCard.vue';
 
 export default {
-  name: 'Hand',
+  name: 'HandPage',
+  components: {
+    PlayerHand,
+    PlayerCard,
+    PlayerHud
+  },
   data: function () {
     return store;
   },
   computed: {
-    incomingLfgs: function() {
-      return this.playerState.lfgs.filter(lfg => lfg.player.id_player !== this.player.id_player)
+    incomingLfgs: function () {
+      return this.playerState.lfgs.filter(lfg =>
+        lfg.player.id_player !== this.player.id_player &&
+        !lfg.members.find(m => m.id_player === this.player.id_player));
     }
   },
   methods: {
-    isLookingForGroup: function () {
-      return this.playerState.group.card.id_card !== undefined;
-    },
-    playCard: function (card, card_index) {
-      axios.post('/player/state/playCard', {
-        id_playercard: card.id_playercard
-      }).then(response => {
-        this.playerState.history.push(card);
-        this.playerState.hand.splice(card_index, 1);
-      }).catch(alert_log);
-    },
     playGroupCard: function (card, card_index) {
-      axios.post('/group/playCard', {
+      axios.post('/player/playGroupCard', {
         id_playercard: card.id_playercard
       }).then(response => {
         this.playerState.history.push(card);
-        this.playerState.hand.splice(card_index, 1);
-      }).catch(alert_log);
+        this.playerState.group = {};
+      }).catch(this.$alertLog);
     },
     cancelGroupCard: function (card, card_index) {
-      axios.post('/group/disband', {
+      axios.post('/player/disbandGroup', {
         id_playercard: card.id_playercard
       }).then(response => {
         this.playerState.history.push(card);
-        this.playerState.hand.splice(card_index, 1);
-      }).catch(alert_log);
-    },
-    dropCard: function (card, index) {
-      axios.post('/player/dropCard/', {
-        id_playercard: card.id_playercard
-      }).then(response => {
-        this.playerState.hand.splice(index, 1);
-      }).catch(alert_log);
-    },
-    dealCard: function () {
-      if (this.playerState.hand.length >= 6) return;
-      axios.post('/player/dealCard/', {
-        id_player: this.player.id_player
-      }).then(response => {
-        this.playerState.hand.push(response.data);
-      }).catch(alert_log);
+        this.playerState.group = {};
+      }).catch(this.$alertLog);
     },
     joinGroup: function (group, index) {
-      group.members.push(this.player);
-      this.$services.lfgService.patch(group.id_lfg, {
-        members: group.members
-      }).then(response => {
-        this.playerState.group = group;
-      }).catch(alert_log);
-    },
-    findGroup: function (card) {
-      this.$services.lfgService.create({
-        id_lfg: this.player.id_player,
-        card,
-        player: this.player,
-        members: []
-      }).then(response => {
-        this.playerState.group = response;
-      }).catch(alert_log);
+      const self = group.members.find(m => m.id_player === this.player.id_player)
+      if (!self) {
+        group.members.push(this.player);
+        this.$services.lfgService.patch(group.id_lfg, {
+          members: group.members
+        }).then(response => {
+          this.playerState.group = response;
+          this.playerState.lfgs.splice(index, 1);
+        }).catch(this.$alertLog);
+      }
     }
   }
 };
 </script>
 
 <style>
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.2s;
-}
-.list-enter, .list-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
+#player-hand {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
 }
 </style>

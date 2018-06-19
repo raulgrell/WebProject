@@ -13,6 +13,7 @@ module.exports = function (app) {
     if (connection) {
       app.channel('anonymous').leave(connection);
       app.channel('authenticated').join(connection);
+      console.log("new connection: ", connection);
     }
   });
 

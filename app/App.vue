@@ -5,11 +5,9 @@
     <transition name="fade" mode="out-in">
       <router-view></router-view>
     </transition>
-    <modal v-if="showModal" @close="showModal = false">
-      <h3 slot="header">custom header</h3>
-    </modal>
-    <hr>
-    <PageMenu></PageMenu>
+      <modal>
+        <h3 slot="header"></h3>
+      </modal>
   </div>
 </template>
 
@@ -18,6 +16,9 @@
 import Vue from 'vue';
 import axios from 'axios';
 import store from './store';
+
+import PageNav from './components/ui/PageNav.vue';
+import Modal from './components/ui/Modal.vue';
 
 function populatestore() {
   axios.get('/player').then(response => {
@@ -34,23 +35,40 @@ function populatestore() {
     axios.get('/player/played/').then(response => this.$set(store.playerState, 'played', response.data));
     axios.get('/player/hand/').then(response => this.$set(store.playerState, 'hand', response.data));
     axios.get('/player/favourites/').then(response => this.$set(store.playerState, 'favourites', response.data));
-    Vue.$services.groupService.get(this.player.id_player).then(response => this.$set(store.playerState, 'group', response));
+    this.$services.lfgService.get(response.data.id_player).then(response => {
+      console.log(response);
+      return this.$set(store.playerState, 'group', response)
+    });
   })
 };
 
-import PageNav from './components/PageNav.vue'
-import PageMenu from './components/PageMenu.vue'
-
 export default {
   name: "App",
-  data: function() {
-    return {
-      showModal: false
+  components: {
+    Modal
+  },
+  feathers: {
+    "/api/lfg/": {
+      created: function (item) {
+        const invite = this.playerState.lfgs.find(i => i.id_lfg === item.id_lfg);
+        if (!invite) {
+          this.playerState.lfgs.push(item);
+        }
+      },
+      patched: function (item) {
+        debugger;
+        if (this.player.group && this.player.group.id_lfg == item.id_lfg) {
+          this.player.group = item;
+        }
+        console.log('invite accepted:', item);
+      }
     }
   },
+  data: function () {
+    return store;
+  },
   components: {
-    PageNav,
-    PageMenu
+    PageNav
   },
   created: populatestore
 };
@@ -72,7 +90,8 @@ export default {
 .fade-leave-active {
   transition: opacity 0.2s;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

@@ -2,7 +2,7 @@
   <!-- Friends -->
   <div class="container is-fluid">
     <h1 class="title is-3">Friends</h1>
-    <div class="columns is-page">
+    <div class="columns">
       <div class="column is-3">
         <h2 class="title is-3">Player List</h2>
         <div v-for="item in collections.players.data" :key="item.id_player">
@@ -14,19 +14,13 @@
       <div class="column is-9">
         <h2 class="title is-3">Friend List</h2>
         <div class="columns is-multiline">
-          <div class="column is-4" v-for="friend in playerState.friends" :key="friend.id_friend">
-            <div class="card">
-              <header class="card-header">
-                <p class="card-header-title">{{ friend.friend_name }}</p>
-              </header>
-              <div class="card-image image is-square">
-                <img :src=" 'https://picsum.photos/300/300?image=' + (friend.id_friend + 50)"  alt="">
+          <div class="column is-4 is-3-fullhd" v-for="friend in playerState.friends" :key="friend.id_friend">
+            <div class="has-text-centered">
+              <div class="image is-square">
+                <img class="is-round" :src=" 'https://picsum.photos/300/300?image=' + (friend.id_friend + 50)" alt="">
               </div>
-              <div class="card-content">
-                <div class="content">
-                  {{ friend.description }}
-                </div>
-              </div>
+              <p class="friend-name title is-6 is-bold">{{ friend.friend_name }}</p>
+              <p>{{ friend.description }}</p>
             </div>
           </div>
         </div>
@@ -40,7 +34,7 @@ import axios from "axios";
 import store from "../store";
 
 export default {
-  name: "Friends",
+  name: "FriendsPage",
   data: function () {
     return store;
   },
@@ -64,3 +58,10 @@ export default {
   }
 };
 </script>
+
+<style>
+.friend-name {
+  padding: 1em 0;
+}
+</style>
+

@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     create: function () {
-      cardService.create(this.card).then(response => {
+      this.$services.cardService.create(this.card).then(response => {
         console.log('Card created: ', response);
       }).catch(error => {
         console.log('Card failed: ', error)

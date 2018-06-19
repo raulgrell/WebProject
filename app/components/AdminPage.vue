@@ -63,7 +63,7 @@ import CardForm from "./admin/CardForm.vue";
 import LocationForm from "./admin/LocationForm.vue";
 
 export default {
-  name: "Admin",
+  name: "AdminPage",
   components: {
     CardForm,
     LocationForm,
@@ -90,7 +90,7 @@ export default {
     },
     "/api/card": {
       created: function (item) {
-        this.collections.locations.data.push(item);
+        this.collections.cards.data.push(item);
       }
     }
   },
