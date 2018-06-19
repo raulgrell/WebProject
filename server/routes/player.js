@@ -102,14 +102,13 @@ router.get('/favourites/', requireUser, function (req, res, next) {
 // All Available Locations by id_player
 router.get('/paths', requireUser, function (req, res, next) {
   const q = `
-    WITH discovered_locations AS (
-      SELECT id_location
-      FROM discovered
-      WHERE id_player = ?)
     SELECT
       location.*
     FROM location
-    INNER JOIN discovered_locations
+    INNER JOIN (
+      SELECT id_location
+      FROM discovered
+      WHERE id_player = ?) AS discovered_locations
       ON location.id_parent = discovered_locations.id_location;
   `;
   db.execute(q, [req.user.id_player], function (error, results, fields) {
@@ -121,14 +120,13 @@ router.get('/paths', requireUser, function (req, res, next) {
 // All Available cards by id_player
 router.get('/deck', requireUser, function (req, res, next) {
   const q = `
-    WITH discovered_locations AS (
-      SELECT id_location
-      FROM discovered
-      WHERE id_player = ?)
     SELECT
       card.*
     FROM card
-    INNER JOIN discovered_locations
+    INNER JOIN (
+      SELECT id_location
+      FROM discovered
+      WHERE id_player = ?) AS discovered_locations
       ON card.id_location = discovered_locations.id_location;
   `;
   db.execute(q, [req.user.id_player], function (error, results, fields) {
@@ -198,19 +196,19 @@ router.get('/hand', requireUser, function (req, res, next) {
 router.post('/dealCard/', requireUser, function (req, res, next) {
   const q = `
     INSERT INTO playercard (id_card, id_player, id_group, state)
-    WITH discovered_locations AS (
-        SELECT id_location, id_player
-        FROM discovered
-        WHERE id_player = ? /* AND is_visited = TRUE */
-      ), available_cards AS (
-        SELECT card.id_card, discovered_locations.id_player
-        FROM discovered_locations
-          LEFT JOIN card ON discovered_locations.id_location = card.id_location)
     SELECT
       available_cards.id_card,
       available_cards.id_player,
       NULL AS id_group,
-      'New' AS state from available_cards
+      'New' AS state from (
+        SELECT card.id_card, discovered_locations.id_player
+        FROM (
+          SELECT id_location, id_player
+          FROM discovered
+          WHERE id_player = ? /* AND is_visited = TRUE */
+        ) AS discovered_locations
+          LEFT JOIN card ON discovered_locations.id_location = card.id_location
+        ) AS available_cards
     ORDER BY RAND() LIMIT 1;
    `;
   db.execute(q, [req.body.id_player], function (error, results, fields) {

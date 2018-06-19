@@ -2,7 +2,7 @@
   <div class="player-hand">
     <h1 class="title is-3">Hand</h1>
     <transition-group name="list" tag="div" class="columns" id="player-hand-cards" v-on:click.prevent="stop">
-      <div class="list-item column is-4" v-for="(card, card_index) in $store.playerState.hand" :key="card.id_playercard">
+      <div class="list-item column is-2" v-for="(card, card_index) in $store.playerState.hand" :key="card.id_playercard">
         <player-card :card="card">
           <p>{{ card.description }}</p>
           <div class="card-actions">
